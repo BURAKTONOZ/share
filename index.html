@@ -215,18 +215,36 @@
             else alert("Hatalı Şifre!");
         }
 
-        // -- DOSYA SEÇİMİ --
+       // -- DOSYA SEÇİMİ VE KUYRUK YÖNETİMİ --
         const dropZone = document.getElementById('dropZone');
         const fileInput = document.getElementById('fileInput');
 
         dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('dragover'); });
         dropZone.addEventListener('dragleave', e => { e.preventDefault(); dropZone.classList.remove('dragover'); });
         dropZone.addEventListener('drop', e => { e.preventDefault(); dropZone.classList.remove('dragover'); handleFiles(e.dataTransfer.files); });
-        fileInput.addEventListener('change', e => handleFiles(e.target.files));
+        fileInput.addEventListener('change', e => { handleFiles(e.target.files); fileInput.value = ''; }); // Aynı dosyayı tekrar seçebilmek için inputu sıfırla
 
         function handleFiles(files) {
             if(files.length === 0) return;
-            selectedFilesData = Array.from(files);
+            
+            // Yeni seçilenleri mevcut listeye ekle (Üzerine yazma)
+            const newFiles = Array.from(files);
+            selectedFilesData = selectedFilesData.concat(newFiles);
+            updateFileListUI();
+        }
+
+        function removeFile(index) {
+            // Seçili dosyayı listeden çıkart ve ekranı güncelle
+            selectedFilesData.splice(index, 1);
+            updateFileListUI();
+        }
+
+        function updateFileListUI() {
+            if(selectedFilesData.length === 0) {
+                document.getElementById('selectedFilesArea').classList.add('hidden');
+                document.getElementById('startUploadBtn').classList.add('hidden');
+                return;
+            }
             
             let totalBytes = selectedFilesData.reduce((acc, file) => acc + file.size, 0);
             let totalMB = (totalBytes / (1024*1024)).toFixed(2);
@@ -234,20 +252,25 @@
             document.getElementById('fileCount').innerText = selectedFilesData.length;
             document.getElementById('totalSizeText').innerText = totalMB + " MB";
             
-            document.getElementById('fileListUI').innerHTML = selectedFilesData.map(f => `
-                <div class="glass-panel p-3 rounded-xl flex justify-between items-center">
+            // X (Silme) butonu eklendi
+            document.getElementById('fileListUI').innerHTML = selectedFilesData.map((f, i) => `
+                <div class="glass-panel p-3 rounded-xl flex justify-between items-center group">
                     <div class="flex items-center gap-3 text-sm text-gray-200 truncate pr-2">
                         <i class="fas fa-file-alt text-cyan-400 text-lg"></i> <span class="truncate">${f.name}</span>
                     </div>
-                    <span class="text-xs text-gray-500 whitespace-nowrap">${(f.size / (1024*1024)).toFixed(1)} MB</span>
+                    <div class="flex items-center gap-3">
+                        <span class="text-xs text-gray-500 whitespace-nowrap">${(f.size / (1024*1024)).toFixed(1)} MB</span>
+                        <button onclick="removeFile(${i})" class="w-8 h-8 rounded-lg bg-red-500/20 text-red-400 hover:bg-red-500/40 hover:text-white transition flex items-center justify-center">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
                 </div>
             `).join('');
 
-            dropZone.classList.add('hidden');
+            // Sürükle bırak alanını gizlemiyoruz ki üzerine ekleme yapılabilsin
             document.getElementById('selectedFilesArea').classList.remove('hidden');
             document.getElementById('startUploadBtn').classList.remove('hidden');
         }
-
         // -- GERÇEK ZAMANLI API YÜKLEMESİ --
         function startUpload() {
             if(selectedFilesData.length === 0) return;
