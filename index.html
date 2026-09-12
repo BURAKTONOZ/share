@@ -2,16 +2,18 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <!-- ZOOM (YAKINLAŞTIRMA) TAMAMEN KAPATILDI -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
     <title>TonozShare - Premium Transfer</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
         
-        /* SCROLL VE APP İSKELETİ */
-        html, body { width: 100vw; height: 100dvh; overflow: hidden; font-family: 'Outfit', sans-serif; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-        
+        /* SCROLL VE APP İSKELETİ (Çift tıklama zoom'u touch-action ile engellendi) */
+        html, body { width: 100vw; height: 100dvh; overflow: hidden; font-family: 'Outfit', sans-serif; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; touch-action: pan-x pan-y; }
+        input, textarea, button { touch-action: manipulation; }
+
         /* CANLI RGB ARKA PLAN */
         .mesh-bg {
             position: fixed; inset: 0; z-index: -1;
@@ -30,11 +32,12 @@
         .glass-input { background: rgba(0, 0, 0, 0.5); border: 1px solid rgba(255, 255, 255, 0.1); color: white; transition: all 0.3s ease; }
         .glass-input:focus, .glass-btn-active { border-color: #3b82f6; box-shadow: 0 0 25px rgba(59, 130, 246, 0.4); outline: none; background: rgba(0, 0, 0, 0.8); color: #60a5fa !important; }
 
-        /* 6 HANELİ ŞİFRE OTP KUTULARI */
-        .otp-input { width: 45px; height: 55px; text-align: center; font-size: 1.5rem; font-weight: bold; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; color: white; transition: all 0.2s; -webkit-text-security: disc; }
+        /* KÜÇÜLTÜLMÜŞ ORANTILI OTP KUTULARI */
+        .otp-input { width: 40px; height: 48px; text-align: center; font-size: 1.25rem; font-weight: bold; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; color: white; transition: all 0.2s; -webkit-text-security: disc; }
         .otp-input:focus { border-color: #3b82f6; box-shadow: 0 0 15px rgba(59,130,246,0.4); outline: none; transform: translateY(-2px); background: rgba(0,0,0,0.6); }
+        @media (min-width: 768px) { .otp-input { width: 48px; height: 56px; font-size: 1.5rem; border-radius: 12px; } }
 
-        /* ANA TAŞIYICILAR (Header Sabit, İçerik Kayar) */
+        /* ANA TAŞIYICILAR */
         #app-container { display: flex; flex-direction: column; width: 100vw; height: 100dvh; position: relative; z-index: 10; overflow: hidden; }
         #views-container { flex-grow: 1; overflow-y: auto; overflow-x: hidden; position: relative; scroll-behavior: smooth; }
 
@@ -67,7 +70,6 @@
         .drop-zone { transition: all 0.3s ease; }
         .drop-zone.dragover { background: rgba(59, 130, 246, 0.15) !important; border-color: #3b82f6 !important; transform: scale(1.02); box-shadow: 0 0 30px rgba(59, 130, 246, 0.2); }
         
-        /* Özel İnce Scrollbar */
         ::-webkit-scrollbar { width: 5px; }
         ::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); }
         ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
@@ -81,7 +83,7 @@
 
     <div id="app-container">
         
-        <!-- TEK VE SABİT ANA MENÜ BAR'I (TEK SATIR) -->
+        <!-- TEK VE SABİT ANA MENÜ BAR'I -->
         <header class="w-full glass-3d rounded-t-none border-t-0 border-x-0 rounded-b-3xl p-3 md:p-4 flex justify-between items-center z-30 shadow-2xl shrink-0 transition-all duration-300">
             <div class="w-full max-w-7xl mx-auto flex items-center justify-between gap-3 md:gap-4">
                 
@@ -90,7 +92,8 @@
                     <div class="w-9 h-9 md:w-12 md:h-12 rounded-xl bg-gradient-to-tr from-blue-600 to-blue-300 flex items-center justify-center shadow-[0_0_20px_rgba(59,130,246,0.5)] transition-all transform group-hover:scale-105 border border-blue-400/30">
                         <i class="fas fa-bolt text-white text-base md:text-2xl"></i>
                     </div>
-                    <h1 class="hidden sm:block text-xl md:text-2xl font-extrabold tracking-tight drop-shadow-lg">
+                    <!-- YAZI: Admin ekranında telefonda gizlenir, diğer ekranlarda mobilde görünür -->
+                    <h1 id="logoText" class="text-xl md:text-2xl font-extrabold tracking-tight drop-shadow-lg transition-all">
                         <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-white">Tonoz</span><span class="text-blue-200 font-light">Share</span>
                     </h1>
                 </div>
@@ -104,15 +107,15 @@
                 <!-- SAĞ: Kontrol Butonları -->
                 <div class="flex items-center gap-2 md:gap-3 shrink-0">
                     
-                    <!-- Yükleme Ekranı Giriş Butonu -->
-                    <button id="navLoginBtn" onclick="switchView('loginView')" class="px-4 py-2 md:px-5 md:py-2.5 rounded-xl md:rounded-full glass-panel hover:bg-white/10 transition-all flex items-center gap-2 text-xs md:text-sm font-bold text-blue-400 border border-blue-500/30 shadow-lg">
+                    <!-- Yükleme Ekranı Yönetici Butonu -->
+                    <button id="navLoginBtn" onclick="switchView('loginView')" class="px-3.5 py-2 md:px-5 md:py-2.5 rounded-xl md:rounded-full glass-panel hover:bg-white/10 transition-all flex items-center gap-2 text-xs md:text-sm font-bold text-blue-400 border border-blue-500/30 shadow-lg">
                         <i class="fas fa-lock"></i> <span class="hidden sm:inline">Yönetim Paneli</span>
                     </button>
 
-                    <!-- Admin Ekranı Araçları (Hepsi Tek Satırda) -->
+                    <!-- Admin Ekranı Araçları -->
                     <div id="adminToolsBar" class="hidden items-center gap-2 md:gap-3 transition-all">
                         
-                        <!-- Toplam MB Durumu (Geniş ekranlarda görünür, mobilde kalabalık yapmaz) -->
+                        <!-- Toplam MB Durumu -->
                         <div class="hidden lg:flex glass-panel px-3 py-1.5 rounded-xl items-center shadow-lg">
                             <span class="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse mr-2 drop-shadow-[0_0_5px_rgba(74,222,128,0.8)]"></span>
                             <div class="text-right border-l border-white/10 pl-2">
@@ -157,7 +160,6 @@
                     <!-- Sağ: Klasör / Sürükle Bırak / Yükleme Animasyonu -->
                     <div class="w-full md:w-1/2 relative min-h-[260px] flex flex-col glass-panel rounded-2xl p-4">
                         
-                        <!-- Boş Durum -->
                         <div id="defaultDropZone" class="drop-zone absolute inset-2 border-2 border-dashed border-white/20 rounded-xl flex flex-col items-center justify-center text-center cursor-pointer group" onclick="document.getElementById('fileInput').click()">
                             <div class="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-300 shadow-lg border border-white/10">
                                 <i class="fas fa-cloud-upload-alt text-3xl text-blue-400"></i>
@@ -167,7 +169,6 @@
                             <input type="file" id="fileInput" class="hidden" multiple>
                         </div>
 
-                        <!-- Aktif Durum (İçi Dolu) -->
                         <div id="activeDropZone" class="hidden flex-col h-full z-10 drop-zone rounded-xl">
                             <div class="flex justify-between items-center px-1 pb-2 border-b border-white/10 mb-2">
                                 <span class="text-[10px] text-blue-400 font-bold uppercase tracking-widest">Kuyruk (<span id="fileCount">0</span>)</span>
@@ -210,14 +211,14 @@
                 </div>
             </main>
 
-            <!-- 2. ŞİFRE EKRANI -->
+            <!-- 2. ŞİFRE EKRANI (Küçültülmüş, Orantılı) -->
             <main id="loginView" class="view-section">
-                <div class="glass-3d w-full max-w-sm p-8 text-center flex flex-col items-center mx-auto my-auto mt-10">
-                    <i class="fas fa-user-shield text-5xl text-blue-400 mb-6 drop-shadow-[0_0_20px_rgba(59,130,246,0.6)]"></i>
-                    <h2 class="text-xl font-bold text-white mb-2">Yönetici Doğrulama</h2>
-                    <p class="text-xs text-gray-400 mb-8">Erişim için 6 haneli kodu girin.</p>
+                <div class="glass-3d w-full max-w-[320px] md:max-w-sm p-6 md:p-8 text-center flex flex-col items-center mx-auto my-auto mt-6 md:mt-10">
+                    <i class="fas fa-user-shield text-4xl md:text-5xl text-blue-400 mb-4 drop-shadow-[0_0_20px_rgba(59,130,246,0.6)]"></i>
+                    <h2 class="text-lg md:text-xl font-bold text-white mb-1">Yönetici Doğrulama</h2>
+                    <p class="text-[11px] md:text-xs text-gray-400 mb-6">Erişim için 6 haneli kodu girin.</p>
                     
-                    <div class="flex gap-2 justify-center w-full mb-8" id="otpContainer">
+                    <div class="flex gap-1.5 md:gap-2 justify-center w-full mb-6" id="otpContainer">
                         <input type="tel" inputmode="numeric" maxlength="1" class="otp-input">
                         <input type="tel" inputmode="numeric" maxlength="1" class="otp-input">
                         <input type="tel" inputmode="numeric" maxlength="1" class="otp-input">
@@ -226,11 +227,11 @@
                         <input type="tel" inputmode="numeric" maxlength="1" class="otp-input">
                     </div>
 
-                    <div class="flex flex-col gap-3 w-full">
-                        <button id="loginBtn" onclick="checkLogin()" class="w-full bg-blue-600 text-white font-bold py-3.5 rounded-xl hover:bg-blue-500 transition-colors shadow-[0_0_20px_rgba(59,130,246,0.4)]">
+                    <div class="flex flex-col gap-2.5 w-full">
+                        <button id="loginBtn" onclick="checkLogin()" class="w-full bg-blue-600 text-white font-bold py-3 rounded-xl hover:bg-blue-500 transition-colors shadow-[0_0_20px_rgba(59,130,246,0.4)] text-sm">
                             Giriş Yap
                         </button>
-                        <button onclick="switchView('uploadView')" class="w-full glass-panel text-gray-300 font-bold py-3.5 rounded-xl hover:bg-white/10 transition-all border border-white/10">
+                        <button onclick="switchView('uploadView')" class="w-full glass-panel text-gray-300 font-bold py-3 rounded-xl hover:bg-white/10 transition-all border border-white/10 text-sm">
                             İptal (Geri Dön)
                         </button>
                     </div>
@@ -241,9 +242,9 @@
                 </div>
             </main>
 
-            <!-- 3. ADMİN PANELİ (Sadece Kartlar, Üst Bar Header'a Gitti!) -->
+            <!-- 3. ADMİN PANELİ (Kartlar) -->
             <main id="adminView" class="view-section pb-12">
-                <div class="w-full max-w-7xl mx-auto flex flex-col gap-5 mt-4">
+                <div class="w-full max-w-7xl mx-auto flex flex-col gap-5 mt-2">
                     <div id="adminCardsContainer" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 content-start"></div>
                 </div>
                 <!-- İMZA -->
@@ -284,7 +285,7 @@
         let secureSessionToken = '';
         let currentSessionFolderId = null;
 
-        // EKRAN VE YÖNETİCİ BUTON KONTROLLERİ
+        // EKRAN VE YÖNETİCİ BUTON KONTROLLERİ (Tek Bar Mantığı + Mobil Logo Gizleme)
         function switchView(viewId) {
             document.querySelectorAll('.view-section').forEach(el => {
                 el.classList.remove('active');
@@ -297,11 +298,19 @@
 
             const isUpload = viewId === 'uploadView';
             const isAdmin = viewId === 'adminView';
+            const logoText = document.getElementById('logoText');
+
+            // Logo Yazısı Gizleme Mantığı (Sadece Admin sayfasında mobilde gizle)
+            if(isAdmin) {
+                logoText.classList.add('hidden', 'md:block');
+            } else {
+                logoText.classList.remove('hidden', 'md:block');
+            }
 
             // Ana Bar Buton Yönetimi
             document.getElementById('navLoginBtn').style.display = isUpload ? 'flex' : 'none';
             
-            // Admin paneli detayları (Arama çubuğu, MB, Kırmızı Çıkış butonu hepsi "adminToolsBar" içinde)
+            // Admin paneli detayları
             document.getElementById('adminSearchBox').style.display = isAdmin ? 'block' : 'none';
             document.getElementById('adminToolsBar').style.display = isAdmin ? 'flex' : 'none';
 
@@ -505,7 +514,7 @@
 
         function getIconData(m) {
             if (!m) return { icon: "fa-file", color: "text-gray-400" };
-            if (m.includes('image/')) return { icon: "fa-image", color: "text-blue-400" };
+            if (m.includes('image/')) return { icon: "fa-image", color: "text-cyan-400" };
             if (m.includes('video/')) return { icon: "fa-film", color: "text-pink-400" };
             if (m.includes('pdf')) return { icon: "fa-file-pdf", color: "text-red-400" };
             if (m.includes('zip')||m.includes('rar')) return { icon: "fa-file-archive", color: "text-yellow-400" };
@@ -583,7 +592,6 @@
                     }).join('') + `</div>`;
                 }
 
-                // API Direkt ZIP İndirme
                 const zipDownloadUrl = `https://tonoz-backend.onrender.com/api/download-folder/${data.id}?token=${secureSessionToken}`;
 
                 return `
