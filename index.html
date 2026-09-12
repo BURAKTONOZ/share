@@ -2,7 +2,6 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <!-- ZOOM (YAKINLAŞTIRMA) TAMAMEN KAPATILDI -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
     <title>TonozShare - Premium Transfer</title>
     <script src="https://cdn.tailwindcss.com"></script>
@@ -10,37 +9,39 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
         
-        /* SCROLL VE APP İSKELETİ (Çift tıklama zoom'u touch-action ile engellendi) */
         html, body { width: 100vw; height: 100dvh; overflow: hidden; font-family: 'Outfit', sans-serif; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; touch-action: pan-x pan-y; }
         input, textarea, button { touch-action: manipulation; }
 
-        /* CANLI RGB ARKA PLAN */
+        /* YENİ: YUMUŞAK GEÇİŞLİ CANLI RGB MESH ARKA PLAN (Kırmızı, Sarı, Pembe, Mor, Cyan) */
         .mesh-bg {
-            position: fixed; inset: 0; z-index: -1;
-            background: linear-gradient(-45deg, #020617, #1e3a8a, #000000, #0ea5e9, #312e81);
-            background-size: 400% 400%; animation: rgbFlow 12s ease infinite;
+            position: fixed; inset: 0; z-index: -2;
+            background: linear-gradient(-45deg, #ff0055, #ffaa00, #ff00cc, #00ffcc, #5500ff);
+            background-size: 400% 400%; animation: rgbFlow 18s ease infinite;
         }
+        /* Okunabilirliği artırmak için çok hafif bir karanlık cam filmi */
+        .dark-overlay { position: fixed; inset: 0; background: rgba(5, 8, 15, 0.7); z-index: -1; }
+        
         @keyframes rgbFlow { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
 
         /* 3D CAM EFEKTİ */
         .glass-3d { 
-            background: rgba(15, 20, 25, 0.45); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+            background: rgba(15, 20, 25, 0.55); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
             border-top: 1px solid rgba(255, 255, 255, 0.2); border-left: 1px solid rgba(255, 255, 255, 0.1); border-bottom: 1px solid rgba(255, 255, 255, 0.05); border-right: 1px solid rgba(255, 255, 255, 0.05);
             box-shadow: 0 40px 80px rgba(0,0,0,0.8), inset 0 0 20px rgba(255, 255, 255, 0.05); border-radius: 1.5rem; 
         }
-        .glass-panel { background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255, 255, 255, 0.08); border-top: 1px solid rgba(255,255,255,0.15); box-shadow: inset 0 2px 10px rgba(0,0,0,0.3); }
+        .glass-panel { background: rgba(0, 0, 0, 0.45); border: 1px solid rgba(255, 255, 255, 0.08); border-top: 1px solid rgba(255,255,255,0.15); box-shadow: inset 0 2px 10px rgba(0,0,0,0.3); }
         .glass-input { background: rgba(0, 0, 0, 0.5); border: 1px solid rgba(255, 255, 255, 0.1); color: white; transition: all 0.3s ease; }
         .glass-input:focus, .glass-btn-active { border-color: #3b82f6; box-shadow: 0 0 25px rgba(59, 130, 246, 0.4); outline: none; background: rgba(0, 0, 0, 0.8); color: #60a5fa !important; }
 
         /* KÜÇÜLTÜLMÜŞ ORANTILI OTP KUTULARI */
         .otp-input { width: 40px; height: 48px; text-align: center; font-size: 1.25rem; font-weight: bold; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; color: white; transition: all 0.2s; -webkit-text-security: disc; }
         .otp-input:focus { border-color: #3b82f6; box-shadow: 0 0 15px rgba(59,130,246,0.4); outline: none; transform: translateY(-2px); background: rgba(0,0,0,0.6); }
-        @media (min-width: 768px) { .otp-input { width: 48px; height: 56px; font-size: 1.5rem; border-radius: 12px; } }
+        .otp-locked { border-color: #ef4444 !important; color: #ef4444 !important; box-shadow: 0 0 15px rgba(239,68,68,0.5) !important; animation: shake 0.4s; }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
 
         /* ANA TAŞIYICILAR */
         #app-container { display: flex; flex-direction: column; width: 100vw; height: 100dvh; position: relative; z-index: 10; overflow: hidden; }
         #views-container { flex-grow: 1; overflow-y: auto; overflow-x: hidden; position: relative; scroll-behavior: smooth; }
-
         .view-section { display: none; flex-direction: column; padding: 1rem; opacity: 0; transform: scale(0.95); transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); min-height: 100%; }
         .view-section.active { display: flex; opacity: 1; transform: scale(1); }
 
@@ -73,13 +74,13 @@
         ::-webkit-scrollbar { width: 5px; }
         ::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); }
         ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.4); }
     </style>
 </head>
 <body>
 
     <!-- SIVI RGB ARKA PLAN -->
     <div class="mesh-bg"></div>
+    <div class="dark-overlay"></div>
 
     <div id="app-container">
         
@@ -92,13 +93,13 @@
                     <div class="w-9 h-9 md:w-12 md:h-12 rounded-xl bg-gradient-to-tr from-blue-600 to-blue-300 flex items-center justify-center shadow-[0_0_20px_rgba(59,130,246,0.5)] transition-all transform group-hover:scale-105 border border-blue-400/30">
                         <i class="fas fa-bolt text-white text-base md:text-2xl"></i>
                     </div>
-                    <!-- YAZI: Admin ekranında telefonda gizlenir, diğer ekranlarda mobilde görünür -->
+                    <!-- YAZI: Admin ekranında telefonda gizlenir -->
                     <h1 id="logoText" class="text-xl md:text-2xl font-extrabold tracking-tight drop-shadow-lg transition-all">
                         <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-white">Tonoz</span><span class="text-blue-200 font-light">Share</span>
                     </h1>
                 </div>
 
-                <!-- ORTA: Akıllı Arama Çubuğu (Sadece Admin Ekranında) -->
+                <!-- ORTA: Akıllı Arama Çubuğu -->
                 <div id="adminSearchBox" class="hidden flex-grow max-w-lg relative mx-2">
                     <i class="fas fa-search absolute left-3 top-2.5 md:top-3 text-gray-400 text-xs"></i>
                     <input type="text" id="searchInput" onkeyup="filterCards()" placeholder="Ara..." class="glass-input w-full pl-8 pr-3 py-2 md:py-2.5 rounded-xl text-xs md:text-sm font-medium shadow-inner transition-all">
@@ -107,57 +108,54 @@
                 <!-- SAĞ: Kontrol Butonları -->
                 <div class="flex items-center gap-2 md:gap-3 shrink-0">
                     
-                    <!-- Yükleme Ekranı Yönetici Butonu -->
                     <button id="navLoginBtn" onclick="switchView('loginView')" class="px-3.5 py-2 md:px-5 md:py-2.5 rounded-xl md:rounded-full glass-panel hover:bg-white/10 transition-all flex items-center gap-2 text-xs md:text-sm font-bold text-blue-400 border border-blue-500/30 shadow-lg">
                         <i class="fas fa-lock"></i> <span class="hidden sm:inline">Yönetim Paneli</span>
                     </button>
 
-                    <!-- Admin Ekranı Araçları -->
+                    <!-- Admin Araçları -->
                     <div id="adminToolsBar" class="hidden items-center gap-2 md:gap-3 transition-all">
                         
-                        <!-- Toplam MB Durumu -->
-                        <div class="hidden lg:flex glass-panel px-3 py-1.5 rounded-xl items-center shadow-lg">
-                            <span class="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse mr-2 drop-shadow-[0_0_5px_rgba(74,222,128,0.8)]"></span>
-                            <div class="text-right border-l border-white/10 pl-2">
-                                <p class="text-[8px] text-gray-400 uppercase font-bold mb-0.5">Toplam</p>
-                                <p class="text-xs font-bold text-white leading-none" id="globalSizeDisplay">0 MB</p>
+                        <!-- Toplam MB Durumu (Artık Mobilde de Görünür) -->
+                        <div class="flex glass-panel px-2.5 py-1.5 rounded-lg items-center shadow-lg border border-white/5">
+                            <span class="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse mr-1.5 drop-shadow-[0_0_5px_rgba(74,222,128,0.8)]"></span>
+                            <div class="text-right border-l border-white/10 pl-1.5">
+                                <p class="text-[7px] text-gray-400 uppercase font-bold leading-none mb-0.5">Toplam</p>
+                                <p class="text-[10px] md:text-xs font-bold text-white leading-none" id="globalSizeDisplay">0 MB</p>
                             </div>
                         </div>
 
-                        <!-- Liste / Kutu Görünüm Butonları -->
+                        <!-- Liste / Kutu Görünümü -->
                         <div class="flex gap-1 bg-black/40 p-1 rounded-xl border border-white/10">
                             <button onclick="setView('list')" id="btnList" class="w-8 h-8 md:w-9 md:h-9 rounded-lg flex items-center justify-center transition glass-btn-active text-blue-400"><i class="fas fa-list text-xs md:text-sm"></i></button>
                             <button onclick="setView('grid')" id="btnGrid" class="w-8 h-8 md:w-9 md:h-9 rounded-lg flex items-center justify-center transition text-gray-400 hover:text-white"><i class="fas fa-th-large text-xs md:text-sm"></i></button>
                         </div>
 
-                        <!-- Küçük Kırmızı Çıkış Butonu -->
+                        <!-- Çıkış Butonu -->
                         <button id="navLogoutBtn" onclick="logoutAdmin()" class="w-9 h-9 md:w-11 md:h-11 rounded-xl bg-red-600/20 hover:bg-red-500/40 transition-all flex items-center justify-center text-red-400 border border-red-500/50 shadow-[0_0_15px_rgba(239,68,68,0.4)]" title="Çıkış Yap">
                             <i class="fas fa-power-off text-sm md:text-base"></i>
                         </button>
-
                     </div>
                 </div>
             </div>
         </header>
 
-        <!-- MERKEZİ EKRAN ALANI (Scroll Sadece Burada) -->
+        <!-- MERKEZİ EKRAN ALANI -->
         <div id="views-container">
             
             <!-- 1. YÜKLEME EKRANI -->
             <main id="uploadView" class="view-section active">
                 <div class="glass-3d w-full max-w-4xl p-5 md:p-8 flex flex-col md:flex-row gap-6 relative mx-auto my-auto mt-4 md:mt-10">
-                    
                     <!-- Sol: Form -->
                     <div class="w-full md:w-1/2 flex flex-col gap-4">
                         <div class="text-left mb-2 hidden md:block">
                             <h2 class="text-2xl font-bold text-white mb-1 drop-shadow-md">Dosya Aktarımı</h2>
                             <p class="text-gray-400 text-xs">Drive alanına şifreli ve hızlı aktarım.</p>
                         </div>
-                        <input type="text" id="senderNameInput" class="glass-input w-full px-5 py-3.5 rounded-xl text-sm font-medium" placeholder="Adınız / Firmanız">
+                        <input type="text" id="senderNameInput" class="glass-input w-full px-5 py-3.5 rounded-xl text-sm font-medium" placeholder="Dosya Adı / Gönderen">
                         <textarea rows="2" id="senderNoteInput" class="glass-input w-full px-5 py-3.5 rounded-xl text-sm resize-none font-medium" placeholder="Notunuz (İsteğe Bağlı)..."></textarea>
                     </div>
 
-                    <!-- Sağ: Klasör / Sürükle Bırak / Yükleme Animasyonu -->
+                    <!-- Sağ: Sürükle Bırak / Animasyon -->
                     <div class="w-full md:w-1/2 relative min-h-[260px] flex flex-col glass-panel rounded-2xl p-4">
                         
                         <div id="defaultDropZone" class="drop-zone absolute inset-2 border-2 border-dashed border-white/20 rounded-xl flex flex-col items-center justify-center text-center cursor-pointer group" onclick="document.getElementById('fileInput').click()">
@@ -205,18 +203,18 @@
                         </div>
                     </div>
                 </div>
-                <!-- İMZA SABİT ALT -->
-                <div class="w-full max-w-4xl mx-auto mt-3 text-center opacity-40 shrink-0 mb-10">
+                <!-- İMZA -->
+                <div class="w-full max-w-4xl mx-auto mt-3 text-center opacity-40 shrink-0 mb-10 pointer-events-none">
                     <span class="text-[10px] font-bold tracking-[0.4em] text-white">CREATED BY TONOZ</span>
                 </div>
             </main>
 
-            <!-- 2. ŞİFRE EKRANI (Küçültülmüş, Orantılı) -->
+            <!-- 2. ŞİFRE EKRANI (Güvenlik Kalkanlı) -->
             <main id="loginView" class="view-section">
                 <div class="glass-3d w-full max-w-[320px] md:max-w-sm p-6 md:p-8 text-center flex flex-col items-center mx-auto my-auto mt-6 md:mt-10">
                     <i class="fas fa-user-shield text-4xl md:text-5xl text-blue-400 mb-4 drop-shadow-[0_0_20px_rgba(59,130,246,0.6)]"></i>
                     <h2 class="text-lg md:text-xl font-bold text-white mb-1">Yönetici Doğrulama</h2>
-                    <p class="text-[11px] md:text-xs text-gray-400 mb-6">Erişim için 6 haneli kodu girin.</p>
+                    <p id="loginSubtitle" class="text-[11px] md:text-xs text-gray-400 mb-6">Erişim için 6 haneli kodu girin.</p>
                     
                     <div class="flex gap-1.5 md:gap-2 justify-center w-full mb-6" id="otpContainer">
                         <input type="tel" inputmode="numeric" maxlength="1" class="otp-input">
@@ -236,47 +234,23 @@
                         </button>
                     </div>
                 </div>
-                <!-- İMZA -->
-                <div class="w-full max-w-sm mx-auto mt-3 text-center opacity-40 shrink-0 mb-10">
+                <div class="w-full max-w-sm mx-auto mt-3 text-center opacity-40 shrink-0 mb-10 pointer-events-none">
                     <span class="text-[10px] font-bold tracking-[0.4em] text-white">CREATED BY TONOZ</span>
                 </div>
             </main>
 
-            <!-- 3. ADMİN PANELİ (Kartlar) -->
+            <!-- 3. ADMİN PANELİ -->
             <main id="adminView" class="view-section pb-12">
                 <div class="w-full max-w-7xl mx-auto flex flex-col gap-5 mt-2">
                     <div id="adminCardsContainer" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 content-start"></div>
                 </div>
-                <!-- İMZA -->
-                <div class="w-full text-center mt-6 opacity-40 shrink-0 mb-10">
+                <div class="w-full text-center mt-6 opacity-40 shrink-0 mb-10 pointer-events-none">
                     <span class="text-[10px] font-bold tracking-[0.4em] text-white">CREATED BY TONOZ</span>
                 </div>
             </main>
 
         </div> <!-- Views Container Sonu -->
     </div> <!-- App Container Sonu -->
-
-    <!-- DÜZENLEME PENCERESİ (MODAL) -->
-    <div id="editModal" class="fixed inset-0 bg-black/80 backdrop-blur-lg z-[60] hidden flex items-center justify-center p-4 transition-opacity">
-        <div class="glass-3d w-full max-w-sm p-6 relative">
-            <h3 class="text-lg font-bold text-white mb-4">Gönderiyi Düzenle</h3>
-            <input type="hidden" id="editFolderId"><input type="hidden" id="editTimeStr">
-            <div class="space-y-3">
-                <div>
-                    <label class="text-[9px] text-gray-400 font-bold mb-1 block uppercase">Adınız / Firmanız</label>
-                    <input type="text" id="editSenderName" class="glass-input w-full px-4 py-2.5 rounded-xl text-sm">
-                </div>
-                <div>
-                    <label class="text-[9px] text-gray-400 font-bold mb-1 block uppercase">Not (Açıklama)</label>
-                    <textarea rows="3" id="editSenderNote" class="glass-input w-full px-4 py-2.5 rounded-xl text-sm resize-none"></textarea>
-                </div>
-            </div>
-            <div class="flex gap-2 mt-6">
-                <button onclick="closeEditModal()" class="flex-1 bg-white/10 hover:bg-white/20 text-white font-bold py-2.5 rounded-xl transition text-xs border border-white/10">İptal</button>
-                <button onclick="saveEdit()" class="flex-1 bg-blue-600 hover:bg-blue-500 text-white font-bold py-2.5 rounded-xl transition shadow-[0_0_20px_rgba(59,130,246,0.5)] text-xs border border-blue-400/50">Kaydet</button>
-            </div>
-        </div>
-    </div>
 
     <script>
         let currentMode = 'list';
@@ -285,45 +259,39 @@
         let secureSessionToken = '';
         let currentSessionFolderId = null;
 
-        // EKRAN VE YÖNETİCİ BUTON KONTROLLERİ (Tek Bar Mantığı + Mobil Logo Gizleme)
+        // EKRAN YÖNETİMİ
         function switchView(viewId) {
-            document.querySelectorAll('.view-section').forEach(el => {
-                el.classList.remove('active');
-                el.style.display = 'none'; 
-            });
-            
+            document.querySelectorAll('.view-section').forEach(el => { el.classList.remove('active'); el.style.display = 'none'; });
             const target = document.getElementById(viewId);
-            target.style.display = 'flex';
-            setTimeout(() => { target.classList.add('active'); }, 10);
+            target.style.display = 'flex'; setTimeout(() => { target.classList.add('active'); }, 10);
 
             const isUpload = viewId === 'uploadView';
             const isAdmin = viewId === 'adminView';
             const logoText = document.getElementById('logoText');
 
-            // Logo Yazısı Gizleme Mantığı (Sadece Admin sayfasında mobilde gizle)
-            if(isAdmin) {
-                logoText.classList.add('hidden', 'md:block');
-            } else {
-                logoText.classList.remove('hidden', 'md:block');
-            }
+            if(isAdmin) { logoText.classList.add('hidden', 'md:block'); } 
+            else { logoText.classList.remove('hidden', 'md:block'); }
 
-            // Ana Bar Buton Yönetimi
             document.getElementById('navLoginBtn').style.display = isUpload ? 'flex' : 'none';
-            
-            // Admin paneli detayları
             document.getElementById('adminSearchBox').style.display = isAdmin ? 'block' : 'none';
             document.getElementById('adminToolsBar').style.display = isAdmin ? 'flex' : 'none';
 
             if(viewId === 'loginView') { 
-                otpInputs.forEach(i => i.value = ''); 
+                otpInputs.forEach(i => { i.value = ''; i.classList.remove('otp-locked'); }); 
+                document.getElementById('loginSubtitle').innerText = "Erişim için 6 haneli kodu girin.";
+                document.getElementById('loginSubtitle').classList.replace('text-red-400', 'text-gray-400');
                 setTimeout(() => { otpInputs[0].focus(); }, 100); 
             }
         }
 
-        // --- 6 HANELİ ŞİFRE (OTP) KONTROLLERİ ---
+        // --- 6 HANELİ ŞİFRE (GÜVENLİK KALKANLI) ---
         const otpInputs = document.querySelectorAll('#otpContainer input');
         otpInputs.forEach((input, index) => {
             input.addEventListener('input', (e) => {
+                otpInputs.forEach(i => i.classList.remove('otp-locked'));
+                document.getElementById('loginSubtitle').classList.replace('text-red-400', 'text-gray-400');
+                document.getElementById('loginSubtitle').innerText = "Erişim için 6 haneli kodu girin.";
+
                 if (e.target.value.length === 1 && index < otpInputs.length - 1) { otpInputs[index + 1].focus(); }
                 checkAutoSubmit();
             });
@@ -340,6 +308,7 @@
         async function checkLogin() {
             const pwd = Array.from(otpInputs).map(i => i.value).join('');
             const btn = document.getElementById('loginBtn');
+            const subTitle = document.getElementById('loginSubtitle');
             if(pwd.length < 6) return;
             
             btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Doğrulanıyor...'; btn.disabled = true;
@@ -348,10 +317,14 @@
                     method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ password: pwd })
                 });
                 const result = await response.json();
+                
                 if (result.success) { 
                     secureSessionToken = result.token; switchView('adminView'); loadAdminData(); 
                 } else { 
-                    alert("Hatalı Şifre!"); otpInputs.forEach(i => i.value = ''); otpInputs[0].focus();
+                    otpInputs.forEach(i => { i.value = ''; i.classList.add('otp-locked'); });
+                    otpInputs[0].focus();
+                    subTitle.innerText = result.message || "Hatalı Şifre!";
+                    subTitle.classList.replace('text-gray-400', 'text-red-400');
                 }
             } catch (err) { alert("Sunucuya bağlanılamadı."); }
             btn.innerHTML = 'Giriş Yap'; btn.disabled = false;
@@ -359,16 +332,14 @@
 
         function logoutAdmin() { secureSessionToken = ''; switchView('uploadView'); }
 
-        // SÜRÜKLE BIRAK SİSTEMİ
+        // SÜRÜKLE BIRAK
         const dropZones = [document.getElementById('defaultDropZone'), document.getElementById('activeDropZone')];
         const fileInput = document.getElementById('fileInput');
-        
         dropZones.forEach(dz => {
             dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('dragover'); });
             dz.addEventListener('dragleave', e => { e.preventDefault(); dz.classList.remove('dragover'); });
             dz.addEventListener('drop', e => { e.preventDefault(); dz.classList.remove('dragover'); handleFiles(e.dataTransfer.files); });
         });
-        
         fileInput.addEventListener('change', e => { handleFiles(e.target.files); fileInput.value = ''; });
 
         function handleFiles(files) {
@@ -406,7 +377,7 @@
             `).join('');
         }
 
-        // --- YÜKLEME ---
+        // YÜKLEME
         function startUpload() {
             if(selectedFilesData.length === 0) return;
             document.getElementById('spinner').classList.remove('hidden');
@@ -460,7 +431,7 @@
             selectedFilesData = []; updateFileListUI();
         }
 
-        // --- ADMİN PANELİ ---
+        // ADMİN PANELİ (Kartlar, Paylaşım Linki)
         async function loadAdminData() {
             const container = document.getElementById('adminCardsContainer');
             container.innerHTML = '<div class="col-span-full py-20 flex flex-col items-center justify-center text-blue-400"><div class="atom-spinner w-16 h-16 mb-4"><div class="atom-ring atom-ring-1"></div><div class="atom-ring atom-ring-2"></div><div class="atom-ring atom-ring-3"></div><div class="atom-core"></div></div><p class="text-sm font-bold tracking-wider drop-shadow-md">Senkronize Ediliyor...</p></div>';
@@ -496,25 +467,18 @@
             if(res.success) loadAdminData(); else alert("Silinemedi.");
         }
 
-        function openEditModal(id, currentName, currentNote, timeStr) {
-            document.getElementById('editFolderId').value = id; document.getElementById('editTimeStr').value = timeStr;
-            document.getElementById('editSenderName').value = currentName; document.getElementById('editSenderNote').value = currentNote;
-            document.getElementById('editModal').classList.remove('hidden');
-        }
-        function closeEditModal() { document.getElementById('editModal').classList.add('hidden'); }
-
-        async function saveEdit() {
-            const id = document.getElementById('editFolderId').value;
-            const body = { senderName: document.getElementById('editSenderName').value, note: document.getElementById('editSenderNote').value, timeStr: document.getElementById('editTimeStr').value };
-            document.getElementById('editModal').querySelector('button.bg-blue-600').innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
-            const res = await apiCall(`https://tonoz-backend.onrender.com/api/edit/${id}`, 'PUT', body);
-            if(res.success) { closeEditModal(); loadAdminData(); } else { alert("Güncellenemedi."); }
-            document.getElementById('editModal').querySelector('button.bg-blue-600').innerText = 'Kaydet';
+        function copyShareLink(folderId, btnElement) {
+            const link = `https://tonoz-backend.onrender.com/api/share/${folderId}`;
+            navigator.clipboard.writeText(link).then(() => {
+                const icon = btnElement.querySelector('i');
+                icon.className = 'fas fa-check text-green-400';
+                setTimeout(() => { icon.className = 'fas fa-link text-xs'; }, 2000);
+            });
         }
 
         function getIconData(m) {
             if (!m) return { icon: "fa-file", color: "text-gray-400" };
-            if (m.includes('image/')) return { icon: "fa-image", color: "text-cyan-400" };
+            if (m.includes('image/')) return { icon: "fa-image", color: "text-blue-400" };
             if (m.includes('video/')) return { icon: "fa-film", color: "text-pink-400" };
             if (m.includes('pdf')) return { icon: "fa-file-pdf", color: "text-red-400" };
             if (m.includes('zip')||m.includes('rar')) return { icon: "fa-file-archive", color: "text-yellow-400" };
@@ -555,7 +519,6 @@
                         const icon = getIconData(f.mimeType);
                         const filePreviewUrl = `https://tonoz-backend.onrender.com/api/file/${f.id}?action=preview&token=${secureSessionToken}`;
                         const fileDownloadUrl = `https://tonoz-backend.onrender.com/api/file/${f.id}?action=download&token=${secureSessionToken}`;
-                        
                         return `
                         <div class="flex justify-between items-center p-2 glass-panel rounded-lg hover:bg-white/10 transition group bg-black/30">
                             <div class="flex items-center gap-2 text-xs text-gray-200 overflow-hidden pr-1">
@@ -575,7 +538,6 @@
                         const filePreviewUrl = `https://tonoz-backend.onrender.com/api/file/${f.id}?action=preview&token=${secureSessionToken}`;
                         const fileDownloadUrl = `https://tonoz-backend.onrender.com/api/file/${f.id}?action=download&token=${secureSessionToken}`;
                         let bgContent = f.thumb ? `<img src="${f.thumb}" class="w-full h-full object-cover opacity-70 group-hover:opacity-100 transition">` : `<div class="w-full h-full flex items-center justify-center bg-black/50"><i class="fas ${icon.icon} ${icon.color} text-2xl"></i></div>`;
-                        
                         return `
                         <div class="aspect-video relative rounded-lg overflow-hidden group border border-white/10 shadow-lg bg-black/40">
                             ${bgContent}
@@ -596,13 +558,14 @@
 
                 return `
                 <div class="glass-3d p-5 flex flex-col transition-all relative group h-fit">
+                    <!-- PAYLAŞIM VE DÜZENLEME BUTONLARI EKLENDİ -->
                     <div class="absolute top-5 right-5 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity z-20">
-                        <button onclick="openEditModal('${data.id}', '${data.sender.replace(/'/g, "\\'")}', '${data.note.replace(/'/g, "\\'")}', '${data.timeStr}')" class="w-8 h-8 rounded bg-yellow-500/20 text-yellow-400 hover:bg-yellow-500 hover:text-white flex items-center justify-center transition" title="Düzenle"><i class="fas fa-pen text-xs"></i></button>
-                        <button onclick="deleteFolder('${data.id}')" class="w-8 h-8 rounded bg-red-500/20 text-red-400 hover:bg-red-500 hover:text-white flex items-center justify-center transition" title="Tümünü Sil"><i class="fas fa-trash text-xs"></i></button>
+                        <button onclick="copyShareLink('${data.id}', this)" class="w-8 h-8 rounded bg-green-500/20 text-green-400 hover:bg-green-500 hover:text-white flex items-center justify-center transition border border-green-500/30" title="İndirme Linkini Kopyala (Şifresiz Paylaşım)"><i class="fas fa-link text-xs"></i></button>
+                        <button onclick="deleteFolder('${data.id}')" class="w-8 h-8 rounded bg-red-500/20 text-red-400 hover:bg-red-500 hover:text-white flex items-center justify-center transition border border-red-500/30" title="Tümünü Sil"><i class="fas fa-trash text-xs"></i></button>
                     </div>
                     <div class="border-b border-white/10 pb-4 mb-4 flex gap-4">
                         <div class="w-12 h-12 rounded-xl bg-blue-500/20 text-blue-400 flex items-center justify-center text-lg font-bold shadow-[0_0_15px_rgba(59,130,246,0.2)] flex-shrink-0 border border-blue-400/30">${data.sender.charAt(0).toUpperCase()}</div>
-                        <div class="overflow-hidden flex-grow pr-16">
+                        <div class="overflow-hidden flex-grow pr-20">
                             <h3 class="font-bold text-white text-base truncate" title="${data.sender}">${data.sender}</h3>
                             <p class="text-[10px] text-cyan-300 mt-1"><i class="far fa-clock"></i> ${data.time}</p>
                         </div>
@@ -624,7 +587,6 @@
             }).join('');
         }
         
-        // Varsayılan Görünüm
         setView('list');
     </script>
 </body>
