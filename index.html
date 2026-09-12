@@ -12,7 +12,7 @@
         /* SCROLL VE APP İSKELETİ */
         html, body { width: 100vw; height: 100dvh; overflow: hidden; font-family: 'Outfit', sans-serif; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
         
-        /* CANLI RGB ARKA PLAN (Asla Siyah Olmaz) */
+        /* CANLI RGB ARKA PLAN */
         .mesh-bg {
             position: fixed; inset: 0; z-index: -1;
             background: linear-gradient(-45deg, #020617, #1e3a8a, #000000, #0ea5e9, #312e81);
@@ -28,7 +28,7 @@
         }
         .glass-panel { background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255, 255, 255, 0.08); border-top: 1px solid rgba(255,255,255,0.15); box-shadow: inset 0 2px 10px rgba(0,0,0,0.3); }
         .glass-input { background: rgba(0, 0, 0, 0.5); border: 1px solid rgba(255, 255, 255, 0.1); color: white; transition: all 0.3s ease; }
-        .glass-input:focus { border-color: #3b82f6; box-shadow: 0 0 25px rgba(59, 130, 246, 0.4); outline: none; background: rgba(0, 0, 0, 0.8); }
+        .glass-input:focus, .glass-btn-active { border-color: #3b82f6; box-shadow: 0 0 25px rgba(59, 130, 246, 0.4); outline: none; background: rgba(0, 0, 0, 0.8); color: #60a5fa !important; }
 
         /* 6 HANELİ ŞİFRE OTP KUTULARI */
         .otp-input { width: 45px; height: 55px; text-align: center; font-size: 1.5rem; font-weight: bold; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; color: white; transition: all 0.2s; -webkit-text-security: disc; }
@@ -81,62 +81,63 @@
 
     <div id="app-container">
         
-        <!-- TEK VE SABİT ANA MENÜ BAR'I (HEPSİ BURANIN İÇİNDE) -->
-        <header class="w-full glass-3d rounded-t-none border-t-0 border-x-0 rounded-b-3xl p-4 flex flex-col gap-4 z-30 shadow-2xl shrink-0 transition-all duration-300">
-            <div class="w-full max-w-7xl mx-auto flex flex-col gap-4">
+        <!-- TEK VE SABİT ANA MENÜ BAR'I (TEK SATIR) -->
+        <header class="w-full glass-3d rounded-t-none border-t-0 border-x-0 rounded-b-3xl p-3 md:p-4 flex justify-between items-center z-30 shadow-2xl shrink-0 transition-all duration-300">
+            <div class="w-full max-w-7xl mx-auto flex items-center justify-between gap-3 md:gap-4">
                 
-                <!-- Üst Satır: Logo ve Ana Buton (Kırmızı Çıkış veya Giriş) -->
-                <div class="flex justify-between items-center w-full">
-                    <!-- TonozShare Logosu -->
-                    <div class="flex items-center gap-3 cursor-pointer group" onclick="switchView('uploadView')">
-                        <div class="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-gradient-to-tr from-blue-600 to-blue-300 flex items-center justify-center shadow-[0_0_20px_rgba(59,130,246,0.5)] transition-all transform group-hover:scale-105 border border-blue-400/30">
-                            <i class="fas fa-bolt text-white text-xl md:text-2xl"></i>
-                        </div>
-                        <h1 class="text-xl md:text-2xl font-extrabold tracking-tight drop-shadow-lg">
-                            <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-white">Tonoz</span><span class="text-blue-200 font-light">Share</span>
-                        </h1>
+                <!-- SOL: TonozShare Logosu -->
+                <div class="flex items-center gap-2 md:gap-3 cursor-pointer group shrink-0" onclick="switchView('uploadView')">
+                    <div class="w-9 h-9 md:w-12 md:h-12 rounded-xl bg-gradient-to-tr from-blue-600 to-blue-300 flex items-center justify-center shadow-[0_0_20px_rgba(59,130,246,0.5)] transition-all transform group-hover:scale-105 border border-blue-400/30">
+                        <i class="fas fa-bolt text-white text-base md:text-2xl"></i>
                     </div>
-
-                    <!-- Sağ Taraf Ana Butonu -->
-                    <div>
-                        <button id="navLoginBtn" onclick="switchView('loginView')" class="px-4 py-2 md:px-5 md:py-2.5 rounded-xl md:rounded-full glass-panel hover:bg-white/10 transition-all flex items-center gap-2 text-xs md:text-sm font-bold text-blue-400 border border-blue-500/30 shadow-lg">
-                            <i class="fas fa-lock"></i> <span class="hidden sm:inline">Yönetim Paneli</span>
-                        </button>
-                        <button id="navLogoutBtn" onclick="logoutAdmin()" class="hidden px-4 py-2 md:px-5 md:py-2.5 rounded-xl md:rounded-full bg-red-600/20 hover:bg-red-500/40 transition-all flex items-center gap-2 text-xs md:text-sm font-bold text-red-400 border border-red-500/50 shadow-[0_0_15px_rgba(239,68,68,0.4)]">
-                            <i class="fas fa-power-off"></i> <span class="hidden sm:inline">Çıkış Yap</span>
-                        </button>
-                    </div>
+                    <h1 class="hidden sm:block text-xl md:text-2xl font-extrabold tracking-tight drop-shadow-lg">
+                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-white">Tonoz</span><span class="text-blue-200 font-light">Share</span>
+                    </h1>
                 </div>
 
-                <!-- Alt Satır: Admin Ekstra Araçları (Arama + MB + Görünüm) -->
-                <!-- BU KISIM SADECE YÖNETİCİ PANELİNDE AÇILIR, TEK BARDA GÖRÜNÜR -->
-                <div id="adminToolsBar" class="hidden flex-col md:flex-row justify-between items-center gap-3 w-full animate-fadeIn transition-all">
-                    <!-- Arama Çubuğu -->
-                    <div class="w-full md:w-1/2 relative">
-                        <i class="fas fa-search absolute left-3.5 top-3 text-gray-400 text-xs"></i>
-                        <input type="text" id="searchInput" onkeyup="filterCards()" placeholder="Firma veya Dosya Ara..." class="glass-input w-full pl-9 pr-3 py-2.5 rounded-xl text-xs font-medium shadow-inner">
-                    </div>
+                <!-- ORTA: Akıllı Arama Çubuğu (Sadece Admin Ekranında) -->
+                <div id="adminSearchBox" class="hidden flex-grow max-w-lg relative mx-2">
+                    <i class="fas fa-search absolute left-3 top-2.5 md:top-3 text-gray-400 text-xs"></i>
+                    <input type="text" id="searchInput" onkeyup="filterCards()" placeholder="Ara..." class="glass-input w-full pl-8 pr-3 py-2 md:py-2.5 rounded-xl text-xs md:text-sm font-medium shadow-inner transition-all">
+                </div>
+
+                <!-- SAĞ: Kontrol Butonları -->
+                <div class="flex items-center gap-2 md:gap-3 shrink-0">
                     
-                    <!-- Toplam MB ve Liste Seçici -->
-                    <div class="flex w-full md:w-auto gap-3 justify-between items-center">
-                        <div class="glass-panel px-3 py-1.5 rounded-xl flex items-center shadow-lg">
+                    <!-- Yükleme Ekranı Giriş Butonu -->
+                    <button id="navLoginBtn" onclick="switchView('loginView')" class="px-4 py-2 md:px-5 md:py-2.5 rounded-xl md:rounded-full glass-panel hover:bg-white/10 transition-all flex items-center gap-2 text-xs md:text-sm font-bold text-blue-400 border border-blue-500/30 shadow-lg">
+                        <i class="fas fa-lock"></i> <span class="hidden sm:inline">Yönetim Paneli</span>
+                    </button>
+
+                    <!-- Admin Ekranı Araçları (Hepsi Tek Satırda) -->
+                    <div id="adminToolsBar" class="hidden items-center gap-2 md:gap-3 transition-all">
+                        
+                        <!-- Toplam MB Durumu (Geniş ekranlarda görünür, mobilde kalabalık yapmaz) -->
+                        <div class="hidden lg:flex glass-panel px-3 py-1.5 rounded-xl items-center shadow-lg">
                             <span class="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse mr-2 drop-shadow-[0_0_5px_rgba(74,222,128,0.8)]"></span>
-                            <div class="text-right border-l border-white/10 pl-3">
+                            <div class="text-right border-l border-white/10 pl-2">
                                 <p class="text-[8px] text-gray-400 uppercase font-bold mb-0.5">Toplam</p>
                                 <p class="text-xs font-bold text-white leading-none" id="globalSizeDisplay">0 MB</p>
                             </div>
                         </div>
-                        <div class="flex gap-1.5 bg-black/40 p-1 rounded-xl border border-white/10">
-                            <button onclick="setView('list')" id="btnList" class="w-9 h-9 rounded-lg flex items-center justify-center transition glass-btn-active text-blue-400"><i class="fas fa-list text-sm"></i></button>
-                            <button onclick="setView('grid')" id="btnGrid" class="w-9 h-9 rounded-lg flex items-center justify-center transition text-gray-400 hover:text-white"><i class="fas fa-th-large text-sm"></i></button>
+
+                        <!-- Liste / Kutu Görünüm Butonları -->
+                        <div class="flex gap-1 bg-black/40 p-1 rounded-xl border border-white/10">
+                            <button onclick="setView('list')" id="btnList" class="w-8 h-8 md:w-9 md:h-9 rounded-lg flex items-center justify-center transition glass-btn-active text-blue-400"><i class="fas fa-list text-xs md:text-sm"></i></button>
+                            <button onclick="setView('grid')" id="btnGrid" class="w-8 h-8 md:w-9 md:h-9 rounded-lg flex items-center justify-center transition text-gray-400 hover:text-white"><i class="fas fa-th-large text-xs md:text-sm"></i></button>
                         </div>
+
+                        <!-- Küçük Kırmızı Çıkış Butonu -->
+                        <button id="navLogoutBtn" onclick="logoutAdmin()" class="w-9 h-9 md:w-11 md:h-11 rounded-xl bg-red-600/20 hover:bg-red-500/40 transition-all flex items-center justify-center text-red-400 border border-red-500/50 shadow-[0_0_15px_rgba(239,68,68,0.4)]" title="Çıkış Yap">
+                            <i class="fas fa-power-off text-sm md:text-base"></i>
+                        </button>
+
                     </div>
                 </div>
-
             </div>
         </header>
 
-        <!-- MERKEZİ EKRAN ALANI (Scroll Sadece Burada, Bar Sabit Kalır) -->
+        <!-- MERKEZİ EKRAN ALANI (Scroll Sadece Burada) -->
         <div id="views-container">
             
             <!-- 1. YÜKLEME EKRANI -->
@@ -240,10 +241,9 @@
                 </div>
             </main>
 
-            <!-- 3. ADMİN PANELİ -->
+            <!-- 3. ADMİN PANELİ (Sadece Kartlar, Üst Bar Header'a Gitti!) -->
             <main id="adminView" class="view-section pb-12">
-                <div class="w-full max-w-7xl mx-auto flex flex-col gap-5 mt-2">
-                    <!-- Kartlar doğrudan burada başlar, bar artık en üstteki Header'da! -->
+                <div class="w-full max-w-7xl mx-auto flex flex-col gap-5 mt-4">
                     <div id="adminCardsContainer" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 content-start"></div>
                 </div>
                 <!-- İMZA -->
@@ -284,7 +284,7 @@
         let secureSessionToken = '';
         let currentSessionFolderId = null;
 
-        // EKRAN VE BUTON YÖNETİCİSİ (Tek Bar Mantığı)
+        // EKRAN VE YÖNETİCİ BUTON KONTROLLERİ
         function switchView(viewId) {
             document.querySelectorAll('.view-section').forEach(el => {
                 el.classList.remove('active');
@@ -298,11 +298,11 @@
             const isUpload = viewId === 'uploadView';
             const isAdmin = viewId === 'adminView';
 
-            // Ana Bar Butonları
+            // Ana Bar Buton Yönetimi
             document.getElementById('navLoginBtn').style.display = isUpload ? 'flex' : 'none';
-            document.getElementById('navLogoutBtn').style.display = isAdmin ? 'flex' : 'none';
-
-            // Admin Araç Çubuğu (Sadece Admin sayfasında açılır)
+            
+            // Admin paneli detayları (Arama çubuğu, MB, Kırmızı Çıkış butonu hepsi "adminToolsBar" içinde)
+            document.getElementById('adminSearchBox').style.display = isAdmin ? 'block' : 'none';
             document.getElementById('adminToolsBar').style.display = isAdmin ? 'flex' : 'none';
 
             if(viewId === 'loginView') { 
@@ -397,7 +397,7 @@
             `).join('');
         }
 
-        // --- HIZLI RGB YÜKLEME ---
+        // --- YÜKLEME ---
         function startUpload() {
             if(selectedFilesData.length === 0) return;
             document.getElementById('spinner').classList.remove('hidden');
@@ -505,7 +505,7 @@
 
         function getIconData(m) {
             if (!m) return { icon: "fa-file", color: "text-gray-400" };
-            if (m.includes('image/')) return { icon: "fa-image", color: "text-cyan-400" };
+            if (m.includes('image/')) return { icon: "fa-image", color: "text-blue-400" };
             if (m.includes('video/')) return { icon: "fa-film", color: "text-pink-400" };
             if (m.includes('pdf')) return { icon: "fa-file-pdf", color: "text-red-400" };
             if (m.includes('zip')||m.includes('rar')) return { icon: "fa-file-archive", color: "text-yellow-400" };
