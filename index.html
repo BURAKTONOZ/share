@@ -434,7 +434,7 @@
         // ADMİN PANELİ (Kartlar, Paylaşım Linki)
         async function loadAdminData() {
             const container = document.getElementById('adminCardsContainer');
-            container.innerHTML = '<div class="col-span-full py-20 flex flex-col items-center justify-center text-blue-400"><div class="atom-spinner w-16 h-16 mb-4"><div class="atom-ring atom-ring-1"></div><div class="atom-ring atom-ring-2"></div><div class="atom-ring atom-ring-3"></div><div class="atom-core"></div></div><p class="text-sm font-bold tracking-wider drop-shadow-md">Senkronize Ediliyor...</p></div>';
+           container.innerHTML = '<div class="col-span-full py-20 flex flex-col items-center justify-center text-blue-400"><div class="w-20 h-20 mb-4 drop-shadow-[0_0_15px_rgba(59,130,246,0.6)]"><img src="search-loading.svg" alt="Senkronize" class="w-full h-full object-contain"></div><p class="text-sm font-bold tracking-wider drop-shadow-md">Sistem Taranıyor ve Senkronize Ediliyor...</p></div>';
             try {
                 const response = await fetch('https://tonoz-backend.onrender.com/api/files', { headers: { 'Authorization': 'Bearer ' + secureSessionToken } });
                 const result = await response.json();
