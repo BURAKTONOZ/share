@@ -581,6 +581,18 @@
         }
         
         setView('list');
+// MOBİL ZOOM (YAKINLAŞTIRMA) ENGELLEYİCİ KALKAN
+        // Çift Tıklama (Double-tap) Zoom Engelleme
+        document.addEventListener('dblclick', function(event) {
+            event.preventDefault();
+        }, { passive: false });
+
+        // İki Parmakla (Pinch) Yakınlaştırma Engelleme (Özellikle iPhone/iOS için)
+        document.addEventListener('gesturestart', function(event) {
+            event.preventDefault();
+        });
+
+        
     </script>
 </body>
 </html>
