@@ -12,40 +12,32 @@
         html, body { width: 100vw; height: 100dvh; overflow: hidden; font-family: 'Outfit', sans-serif; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; touch-action: pan-x pan-y; }
         input, textarea, button { touch-action: manipulation; }
 
-        /* YENİ: YUMUŞAK GEÇİŞLİ CANLI RGB MESH ARKA PLAN (Kırmızı, Sarı, Pembe, Mor, Cyan) */
-        .mesh-bg {
-            position: fixed; inset: 0; z-index: -2;
-            background: linear-gradient(-45deg, #ff0055, #ffaa00, #ff00cc, #00ffcc, #5500ff);
-            background-size: 400% 400%; animation: rgbFlow 18s ease infinite;
-        }
-        /* Okunabilirliği artırmak için çok hafif bir karanlık cam filmi */
+        .mesh-bg { position: fixed; inset: 0; z-index: -2; background: linear-gradient(-45deg, #ff0055, #ffaa00, #ff00cc, #00ffcc, #5500ff); background-size: 400% 400%; animation: rgbFlow 18s ease infinite; }
         .dark-overlay { position: fixed; inset: 0; background: rgba(5, 8, 15, 0.7); z-index: -1; }
-        
         @keyframes rgbFlow { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
 
-        /* 3D CAM EFEKTİ */
-        .glass-3d { 
-            background: rgba(15, 20, 25, 0.55); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
-            border-top: 1px solid rgba(255, 255, 255, 0.2); border-left: 1px solid rgba(255, 255, 255, 0.1); border-bottom: 1px solid rgba(255, 255, 255, 0.05); border-right: 1px solid rgba(255, 255, 255, 0.05);
-            box-shadow: 0 40px 80px rgba(0,0,0,0.8), inset 0 0 20px rgba(255, 255, 255, 0.05); border-radius: 1.5rem; 
-        }
+        .glass-3d { background: rgba(15, 20, 25, 0.55); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); border-top: 1px solid rgba(255, 255, 255, 0.2); border-left: 1px solid rgba(255, 255, 255, 0.1); border-bottom: 1px solid rgba(255, 255, 255, 0.05); border-right: 1px solid rgba(255, 255, 255, 0.05); box-shadow: 0 40px 80px rgba(0,0,0,0.8), inset 0 0 20px rgba(255, 255, 255, 0.05); border-radius: 1.5rem; }
+        
+        /* Şifreli (Paylaşılan) Kartlar İçin Özel Zümrüt Neon Efekti */
+        .glass-shared { border-color: rgba(16, 185, 129, 0.4) !important; box-shadow: 0 0 25px rgba(16, 185, 129, 0.15), inset 0 0 15px rgba(16, 185, 129, 0.05) !important; }
+        
         .glass-panel { background: rgba(0, 0, 0, 0.45); border: 1px solid rgba(255, 255, 255, 0.08); border-top: 1px solid rgba(255,255,255,0.15); box-shadow: inset 0 2px 10px rgba(0,0,0,0.3); }
         .glass-input { background: rgba(0, 0, 0, 0.5); border: 1px solid rgba(255, 255, 255, 0.1); color: white; transition: all 0.3s ease; }
         .glass-input:focus, .glass-btn-active { border-color: #3b82f6; box-shadow: 0 0 25px rgba(59, 130, 246, 0.4); outline: none; background: rgba(0, 0, 0, 0.8); color: #60a5fa !important; }
 
-        /* KÜÇÜLTÜLMÜŞ ORANTILI OTP KUTULARI */
         .otp-input { width: 40px; height: 48px; text-align: center; font-size: 1.25rem; font-weight: bold; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; color: white; transition: all 0.2s; -webkit-text-security: disc; }
         .otp-input:focus { border-color: #3b82f6; box-shadow: 0 0 15px rgba(59,130,246,0.4); outline: none; transform: translateY(-2px); background: rgba(0,0,0,0.6); }
+        /* Müşteri (Guest) OTP Rengi */
+        .guest-otp:focus { border-color: #10b981 !important; box-shadow: 0 0 15px rgba(16, 185, 129, 0.4) !important; }
+        
         .otp-locked { border-color: #ef4444 !important; color: #ef4444 !important; box-shadow: 0 0 15px rgba(239,68,68,0.5) !important; animation: shake 0.4s; }
         @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
 
-        /* ANA TAŞIYICILAR */
         #app-container { display: flex; flex-direction: column; width: 100vw; height: 100dvh; position: relative; z-index: 10; overflow: hidden; }
         #views-container { flex-grow: 1; overflow-y: auto; overflow-x: hidden; position: relative; scroll-behavior: smooth; }
         .view-section { display: none; flex-direction: column; padding: 1rem; opacity: 0; transform: scale(0.95); transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); min-height: 100%; }
         .view-section.active { display: flex; opacity: 1; transform: scale(1); }
 
-        /* RGB YÜKLEME BARI */
         .progress-track { background: rgba(0,0,0,0.7); border-radius: 99px; height: 14px; overflow: hidden; border: 1px solid rgba(255,255,255,0.15); box-shadow: inset 0 2px 10px rgba(0,0,0,0.9); position: relative; }
         .progress-fill { height: 100%; border-radius: 99px; width: 0%; background: linear-gradient(90deg, #ff0055, #5500ff, #00ffcc, #3b82f6, #ff0055); background-size: 300% 100%; animation: fastRgbFlow 1.5s linear infinite; box-shadow: 0 0 20px rgba(0, 255, 204, 0.8); transition: width 0.2s ease-out; position: relative; }
         .progress-fill::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent); animation: shine 1s linear infinite; }
@@ -54,16 +46,10 @@
 
         @keyframes fastRgbFlow { 0% { background-position: 0% 50%; } 100% { background-position: 100% 50%; } }
         @keyframes shine { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
-
-       /* Başarı İkonu Animasyonu */
         @keyframes popIn { 0% { transform: scale(0); opacity: 0; } 70% { transform: scale(1.3); opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
         .success-animate { animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
-
-        /* Sürükle Bırak Alanı Efektleri */
         .drop-zone { transition: all 0.3s ease; }
         .drop-zone.dragover { background: rgba(59, 130, 246, 0.15) !important; border-color: #3b82f6 !important; transform: scale(1.02); box-shadow: 0 0 30px rgba(59, 130, 246, 0.2); }
-        
-        /* Özel İnce Scrollbar */
         ::-webkit-scrollbar { width: 5px; }
         ::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); }
         ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
@@ -71,45 +57,39 @@
 </head>
 <body>
 
-    <!-- SIVI RGB ARKA PLAN -->
     <div class="mesh-bg"></div>
     <div class="dark-overlay"></div>
 
     <div id="app-container">
-        
-        <!-- TEK VE SABİT ANA MENÜ BAR'I -->
         <header class="w-full glass-3d rounded-t-none border-t-0 border-x-0 rounded-b-3xl p-3 md:p-4 flex justify-between items-center z-30 shadow-2xl shrink-0 transition-all duration-300">
             <div class="w-full max-w-7xl mx-auto flex items-center justify-between gap-3 md:gap-4">
                 
-                <!-- SOL: TonozShare Logosu -->
                 <div class="flex items-center gap-2 md:gap-3 cursor-pointer group shrink-0" onclick="switchView('uploadView')">
                     <div class="w-9 h-9 md:w-12 md:h-12 rounded-xl bg-gradient-to-tr from-blue-600 to-blue-300 flex items-center justify-center shadow-[0_0_20px_rgba(59,130,246,0.5)] transition-all transform group-hover:scale-105 border border-blue-400/30">
                         <i class="fas fa-bolt text-white text-base md:text-2xl"></i>
                     </div>
-                    <!-- YAZI: Admin ekranında telefonda gizlenir -->
                     <h1 id="logoText" class="text-xl md:text-2xl font-extrabold tracking-tight drop-shadow-lg transition-all">
                         <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-white">Tonoz</span><span class="text-blue-200 font-light">Share</span>
                     </h1>
                 </div>
 
-                <!-- ORTA: Akıllı Arama Çubuğu -->
                 <div id="adminSearchBox" class="hidden flex-grow max-w-lg relative mx-2">
                     <i class="fas fa-search absolute left-3 top-2.5 md:top-3 text-gray-400 text-xs"></i>
                     <input type="text" id="searchInput" onkeyup="filterCards()" placeholder="Ara..." class="glass-input w-full pl-8 pr-3 py-2 md:py-2.5 rounded-xl text-xs md:text-sm font-medium shadow-inner transition-all">
                 </div>
 
-                <!-- SAĞ: Kontrol Butonları -->
-                <div class="flex items-center gap-2 md:gap-3 shrink-0">
-                    
-                    <button id="navLoginBtn" onclick="switchView('loginView')" class="px-3.5 py-2 md:px-5 md:py-2.5 rounded-xl md:rounded-full glass-panel hover:bg-white/10 transition-all flex items-center gap-2 text-xs md:text-sm font-bold text-blue-400 border border-blue-500/30 shadow-lg">
-                        <i class="fas fa-lock"></i> <span class="hidden sm:inline">Yönetim Paneli</span>
+                <div class="flex items-center gap-2 md:gap-3 shrink-0" id="topBtnGroup">
+                    <!-- YENİ: MÜŞTERİ DOSYA AL BUTONU -->
+                    <button id="navGuestBtn" onclick="switchView('guestLoginView')" class="px-3.5 py-2 md:px-5 md:py-2.5 rounded-xl md:rounded-full bg-emerald-500/10 hover:bg-emerald-500/20 transition-all flex items-center gap-2 text-xs md:text-sm font-bold text-emerald-400 border border-emerald-500/30 shadow-lg">
+                        <i class="fas fa-download"></i> <span class="hidden sm:inline">Dosya Al</span>
                     </button>
 
-                    <!-- Admin Araçları -->
+                    <button id="navLoginBtn" onclick="switchView('loginView')" class="px-3.5 py-2 md:px-5 md:py-2.5 rounded-xl md:rounded-full glass-panel hover:bg-white/10 transition-all flex items-center gap-2 text-xs md:text-sm font-bold text-blue-400 border border-blue-500/30 shadow-lg">
+                        <i class="fas fa-lock"></i> <span class="hidden sm:inline">Yönetim</span>
+                    </button>
+
                     <div id="adminToolsBar" class="hidden items-center gap-2 md:gap-3 transition-all">
-                        
-                        <!-- Toplam MB Durumu (Artık Mobilde de Görünür) -->
-                        <div class="flex glass-panel px-2.5 py-1.5 rounded-lg items-center shadow-lg border border-white/5">
+                        <div class="flex glass-panel px-2.5 py-1.5 rounded-lg items-center shadow-lg border border-white/5" id="totalSizeContainer">
                             <span class="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse mr-1.5 drop-shadow-[0_0_5px_rgba(74,222,128,0.8)]"></span>
                             <div class="text-right border-l border-white/10 pl-1.5">
                                 <p class="text-[7px] text-gray-400 uppercase font-bold leading-none mb-0.5">Toplam</p>
@@ -117,13 +97,11 @@
                             </div>
                         </div>
 
-                        <!-- Liste / Kutu Görünümü -->
-                        <div class="flex gap-1 bg-black/40 p-1 rounded-xl border border-white/10">
+                        <div class="flex gap-1 bg-black/40 p-1 rounded-xl border border-white/10" id="viewModeToggle">
                             <button onclick="setView('list')" id="btnList" class="w-8 h-8 md:w-9 md:h-9 rounded-lg flex items-center justify-center transition glass-btn-active text-blue-400"><i class="fas fa-list text-xs md:text-sm"></i></button>
                             <button onclick="setView('grid')" id="btnGrid" class="w-8 h-8 md:w-9 md:h-9 rounded-lg flex items-center justify-center transition text-gray-400 hover:text-white"><i class="fas fa-th-large text-xs md:text-sm"></i></button>
                         </div>
 
-                        <!-- Çıkış Butonu -->
                         <button id="navLogoutBtn" onclick="logoutAdmin()" class="w-9 h-9 md:w-11 md:h-11 rounded-xl bg-red-600/20 hover:bg-red-500/40 transition-all flex items-center justify-center text-red-400 border border-red-500/50 shadow-[0_0_15px_rgba(239,68,68,0.4)]" title="Çıkış Yap">
                             <i class="fas fa-power-off text-sm md:text-base"></i>
                         </button>
@@ -132,13 +110,11 @@
             </div>
         </header>
 
-        <!-- MERKEZİ EKRAN ALANI -->
         <div id="views-container">
             
             <!-- 1. YÜKLEME EKRANI -->
             <main id="uploadView" class="view-section active">
                 <div class="glass-3d w-full max-w-4xl p-5 md:p-8 flex flex-col md:flex-row gap-6 relative mx-auto my-auto mt-4 md:mt-10">
-                    <!-- Sol: Form -->
                     <div class="w-full md:w-1/2 flex flex-col gap-4">
                         <div class="text-left mb-2 hidden md:block">
                             <h2 class="text-2xl font-bold text-white mb-1 drop-shadow-md">Dosya Aktarımı</h2>
@@ -148,13 +124,11 @@
                         <textarea rows="2" id="senderNoteInput" class="glass-input w-full px-5 py-3.5 rounded-xl text-sm resize-none font-medium" placeholder="Notunuz (İsteğe Bağlı)..."></textarea>
                     </div>
 
-                    <!-- Sağ: Sürükle Bırak / Animasyon -->
                     <div class="w-full md:w-1/2 relative min-h-[260px] flex flex-col glass-panel rounded-2xl p-4">
-                        
                         <div id="defaultDropZone" class="drop-zone absolute inset-2 border-2 border-dashed border-white/20 rounded-xl flex flex-col items-center justify-center text-center cursor-pointer group" onclick="document.getElementById('fileInput').click()">
                            <div class="w-28 h-28 md:w-32 md:h-32 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-300 drop-shadow-[0_0_15px_rgba(59,130,246,0.6)]">
-    <img src="upload-cloud.svg" alt="Yükleme Animasyonu" class="w-full h-full object-contain">
-</div>
+                                <img src="upload-cloud.svg" alt="Yükleme Animasyonu" class="w-full h-full object-contain">
+                            </div>
                             <h3 class="text-white font-bold text-base drop-shadow-md">Dosya / Klasör Sürükle</h3>
                             <p class="text-gray-400 text-[11px] mt-1">veya seçmek için tıkla</p>
                             <input type="file" id="fileInput" class="hidden" multiple>
@@ -176,11 +150,10 @@
                             </div>
                         </div>
 
-                        <!-- 3D Atom Yükleme Ekranı -->
                         <div id="progressArea" class="hidden absolute inset-0 glass-3d rounded-2xl flex-col items-center justify-center p-6 text-center z-20">
                            <div id="spinner" class="w-24 h-24 flex items-center justify-center mb-4 drop-shadow-[0_0_20px_rgba(59,130,246,0.6)]">
-    <img src="search-loading.svg" alt="Taranıyor" class="w-full h-full object-contain">
-</div>
+                                <img src="search-loading.svg" alt="Taranıyor" class="w-full h-full object-contain">
+                            </div>
                             <i id="successIcon" class="fas fa-check-circle text-6xl text-green-400 hidden mb-6 drop-shadow-[0_0_30px_rgba(34,197,94,0.8)]"></i>
                             
                             <h3 id="uploadStatusTitle" class="text-white font-bold text-lg md:text-xl mb-4 drop-shadow-md">Sisteme Aktarılıyor...</h3>
@@ -196,17 +169,16 @@
                         </div>
                     </div>
                 </div>
-                <!-- İMZA -->
                 <div class="w-full max-w-4xl mx-auto mt-3 text-center opacity-40 shrink-0 mb-10 pointer-events-none">
                     <span class="text-[10px] font-bold tracking-[0.4em] text-white">CREATED BY TONOZ</span>
                 </div>
             </main>
 
-            <!-- 2. ŞİFRE EKRANI (Güvenlik Kalkanlı) -->
+            <!-- 2. ADMİN ŞİFRE EKRANI -->
             <main id="loginView" class="view-section">
                 <div class="glass-3d w-full max-w-[320px] md:max-w-sm p-6 md:p-8 text-center flex flex-col items-center mx-auto my-auto mt-6 md:mt-10">
                     <i class="fas fa-user-shield text-4xl md:text-5xl text-blue-400 mb-4 drop-shadow-[0_0_20px_rgba(59,130,246,0.6)]"></i>
-                    <h2 class="text-lg md:text-xl font-bold text-white mb-1">Yönetici Doğrulama</h2>
+                    <h2 class="text-lg md:text-xl font-bold text-white mb-1">Yönetici Paneli</h2>
                     <p id="loginSubtitle" class="text-[11px] md:text-xs text-gray-400 mb-6">Erişim için 6 haneli kodu girin.</p>
                     
                     <div class="flex gap-1.5 md:gap-2 justify-center w-full mb-6" id="otpContainer">
@@ -219,20 +191,36 @@
                     </div>
 
                     <div class="flex flex-col gap-2.5 w-full">
-                        <button id="loginBtn" onclick="checkLogin()" class="w-full bg-blue-600 text-white font-bold py-3 rounded-xl hover:bg-blue-500 transition-colors shadow-[0_0_20px_rgba(59,130,246,0.4)] text-sm">
-                            Giriş Yap
-                        </button>
-                        <button onclick="switchView('uploadView')" class="w-full glass-panel text-gray-300 font-bold py-3 rounded-xl hover:bg-white/10 transition-all border border-white/10 text-sm">
-                            İptal (Geri Dön)
-                        </button>
+                        <button id="loginBtn" onclick="checkLogin('admin')" class="w-full bg-blue-600 text-white font-bold py-3 rounded-xl hover:bg-blue-500 transition-colors shadow-[0_0_20px_rgba(59,130,246,0.4)] text-sm">Giriş Yap</button>
+                        <button onclick="switchView('uploadView')" class="w-full glass-panel text-gray-300 font-bold py-3 rounded-xl hover:bg-white/10 transition-all border border-white/10 text-sm">İptal</button>
                     </div>
-                </div>
-                <div class="w-full max-w-sm mx-auto mt-3 text-center opacity-40 shrink-0 mb-10 pointer-events-none">
-                    <span class="text-[10px] font-bold tracking-[0.4em] text-white">CREATED BY TONOZ</span>
                 </div>
             </main>
 
-            <!-- 3. ADMİN PANELİ -->
+            <!-- YENİ: 3. MÜŞTERİ (DOSYA AL) ŞİFRE EKRANI -->
+            <main id="guestLoginView" class="view-section">
+                <div class="glass-3d w-full max-w-[320px] md:max-w-sm p-6 md:p-8 text-center flex flex-col items-center mx-auto my-auto mt-6 md:mt-10 border-emerald-500/30 shadow-[0_0_30px_rgba(16,185,129,0.1)]">
+                    <i class="fas fa-box-open text-4xl md:text-5xl text-emerald-400 mb-4 drop-shadow-[0_0_20px_rgba(16,185,129,0.6)]"></i>
+                    <h2 class="text-lg md:text-xl font-bold text-white mb-1">Müşteri / Dosya Paneli</h2>
+                    <p id="guestSubtitle" class="text-[11px] md:text-xs text-gray-400 mb-6">Size verilen 6 haneli erişim kodunu girin.</p>
+                    
+                    <div class="flex gap-1.5 md:gap-2 justify-center w-full mb-6" id="guestOtpContainer">
+                        <input type="tel" inputmode="numeric" maxlength="1" class="otp-input guest-otp">
+                        <input type="tel" inputmode="numeric" maxlength="1" class="otp-input guest-otp">
+                        <input type="tel" inputmode="numeric" maxlength="1" class="otp-input guest-otp">
+                        <input type="tel" inputmode="numeric" maxlength="1" class="otp-input guest-otp">
+                        <input type="tel" inputmode="numeric" maxlength="1" class="otp-input guest-otp">
+                        <input type="tel" inputmode="numeric" maxlength="1" class="otp-input guest-otp">
+                    </div>
+
+                    <div class="flex flex-col gap-2.5 w-full">
+                        <button id="guestLoginBtn" onclick="checkLogin('guest')" class="w-full bg-emerald-600 text-white font-bold py-3 rounded-xl hover:bg-emerald-500 transition-colors shadow-[0_0_20px_rgba(16,185,129,0.4)] text-sm">Dosyalarımı Bul</button>
+                        <button onclick="switchView('uploadView')" class="w-full glass-panel text-gray-300 font-bold py-3 rounded-xl hover:bg-white/10 transition-all border border-white/10 text-sm">İptal</button>
+                    </div>
+                </div>
+            </main>
+
+            <!-- 4. PANELLER (Admin ve Misafir Ortak Kullanır) -->
             <main id="adminView" class="view-section pb-12">
                 <div class="w-full max-w-7xl mx-auto flex flex-col gap-5 mt-2">
                     <div id="adminCardsContainer" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 content-start"></div>
@@ -242,8 +230,8 @@
                 </div>
             </main>
 
-        </div> <!-- Views Container Sonu -->
-    </div> <!-- App Container Sonu -->
+        </div> 
+    </div> 
 
     <script>
         let currentMode = 'list';
@@ -251,79 +239,96 @@
         let realAdminData = [];
         let secureSessionToken = '';
         let currentSessionFolderId = null;
+        let isGuestMode = false; // YENİ: Sistemin Misafir modunda olup olmadığını anlar
 
-        // EKRAN YÖNETİMİ
         function switchView(viewId) {
             document.querySelectorAll('.view-section').forEach(el => { el.classList.remove('active'); el.style.display = 'none'; });
             const target = document.getElementById(viewId);
             target.style.display = 'flex'; setTimeout(() => { target.classList.add('active'); }, 10);
 
             const isUpload = viewId === 'uploadView';
-            const isAdmin = viewId === 'adminView';
-            const logoText = document.getElementById('logoText');
-
-            if(isAdmin) { logoText.classList.add('hidden', 'md:block'); } 
-            else { logoText.classList.remove('hidden', 'md:block'); }
-
+            const isDashboard = viewId === 'adminView';
+            
+            document.getElementById('logoText').classList.toggle('hidden', isDashboard);
+            document.getElementById('logoText').classList.toggle('md:block', !isDashboard);
+            
             document.getElementById('navLoginBtn').style.display = isUpload ? 'flex' : 'none';
-            document.getElementById('adminSearchBox').style.display = isAdmin ? 'block' : 'none';
-            document.getElementById('adminToolsBar').style.display = isAdmin ? 'flex' : 'none';
+            document.getElementById('navGuestBtn').style.display = isUpload ? 'flex' : 'none';
+            
+            // Sadece admin ise arama ve liste ayarlarını göster, misafirde gizle
+            document.getElementById('adminSearchBox').style.display = (isDashboard && !isGuestMode) ? 'block' : 'none';
+            document.getElementById('adminToolsBar').style.display = isDashboard ? 'flex' : 'none';
+            document.getElementById('totalSizeContainer').style.display = isGuestMode ? 'none' : 'flex';
+            document.getElementById('viewModeToggle').style.display = isGuestMode ? 'none' : 'flex';
 
-            if(viewId === 'loginView') { 
-                otpInputs.forEach(i => { i.value = ''; i.classList.remove('otp-locked'); }); 
-                document.getElementById('loginSubtitle').innerText = "Erişim için 6 haneli kodu girin.";
-                document.getElementById('loginSubtitle').classList.replace('text-red-400', 'text-gray-400');
-                setTimeout(() => { otpInputs[0].focus(); }, 100); 
+            if(viewId === 'loginView' || viewId === 'guestLoginView') { 
+                const inputs = viewId === 'loginView' ? adminOtpInputs : guestOtpInputs;
+                const subTitle = viewId === 'loginView' ? document.getElementById('loginSubtitle') : document.getElementById('guestSubtitle');
+                inputs.forEach(i => { i.value = ''; i.classList.remove('otp-locked'); }); 
+                subTitle.innerText = viewId === 'loginView' ? "Erişim için 6 haneli kodu girin." : "Size verilen 6 haneli erişim kodunu girin.";
+                subTitle.classList.replace('text-red-400', 'text-gray-400');
+                setTimeout(() => { inputs[0].focus(); }, 100); 
             }
         }
 
-        // --- 6 HANELİ ŞİFRE (GÜVENLİK KALKANLI) ---
-        const otpInputs = document.querySelectorAll('#otpContainer input');
-        otpInputs.forEach((input, index) => {
-            input.addEventListener('input', (e) => {
-                otpInputs.forEach(i => i.classList.remove('otp-locked'));
-                document.getElementById('loginSubtitle').classList.replace('text-red-400', 'text-gray-400');
-                document.getElementById('loginSubtitle').innerText = "Erişim için 6 haneli kodu girin.";
+        // --- OTP (ŞİFRE KUTULARI) MANTIKLARI ---
+        const adminOtpInputs = document.querySelectorAll('#otpContainer input');
+        const guestOtpInputs = document.querySelectorAll('#guestOtpContainer input');
 
-                if (e.target.value.length === 1 && index < otpInputs.length - 1) { otpInputs[index + 1].focus(); }
-                checkAutoSubmit();
-            });
-            input.addEventListener('keydown', (e) => {
-                if (e.key === 'Backspace' && !e.target.value && index > 0) { otpInputs[index - 1].focus(); }
-            });
-        });
+        function setupOtp(inputs, type) {
+            inputs.forEach((input, index) => {
+                input.addEventListener('input', (e) => {
+                    inputs.forEach(i => i.classList.remove('otp-locked'));
+                    const subTitle = type === 'admin' ? document.getElementById('loginSubtitle') : document.getElementById('guestSubtitle');
+                    subTitle.classList.replace('text-red-400', 'text-gray-400');
+                    subTitle.innerText = type === 'admin' ? "Erişim için 6 haneli kodu girin." : "Size verilen 6 haneli erişim kodunu girin.";
 
-        function checkAutoSubmit() {
-            const pwd = Array.from(otpInputs).map(i => i.value).join('');
-            if(pwd.length === 6) { checkLogin(); }
+                    if (e.target.value.length === 1 && index < inputs.length - 1) { inputs[index + 1].focus(); }
+                    
+                    const pwd = Array.from(inputs).map(i => i.value).join('');
+                    if(pwd.length === 6) checkLogin(type);
+                });
+                input.addEventListener('keydown', (e) => {
+                    if (e.key === 'Backspace' && !e.target.value && index > 0) { inputs[index - 1].focus(); }
+                });
+            });
         }
+        setupOtp(adminOtpInputs, 'admin');
+        setupOtp(guestOtpInputs, 'guest');
 
-        async function checkLogin() {
-            const pwd = Array.from(otpInputs).map(i => i.value).join('');
-            const btn = document.getElementById('loginBtn');
-            const subTitle = document.getElementById('loginSubtitle');
+        async function checkLogin(type) {
+            const isGuest = type === 'guest';
+            const inputs = isGuest ? guestOtpInputs : adminOtpInputs;
+            const pwd = Array.from(inputs).map(i => i.value).join('');
+            const btn = isGuest ? document.getElementById('guestLoginBtn') : document.getElementById('loginBtn');
+            const subTitle = isGuest ? document.getElementById('guestSubtitle') : document.getElementById('loginSubtitle');
+            
             if(pwd.length < 6) return;
             
-            btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Doğrulanıyor...'; btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Aranıyor...'; btn.disabled = true;
             try {
-                const response = await fetch('https://tonoz-backend.onrender.com/api/login', {
-                    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ password: pwd })
+                const endpoint = isGuest ? '/api/guest-login' : '/api/login';
+                const response = await fetch('https://tonoz-backend.onrender.com' + endpoint, {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ password: pwd, pin: pwd })
                 });
                 const result = await response.json();
                 
                 if (result.success) { 
-                    secureSessionToken = result.token; switchView('adminView'); loadAdminData(); 
+                    secureSessionToken = result.token; 
+                    isGuestMode = isGuest; // Sistemi misafir veya admin moduna geçir
+                    switchView('adminView'); 
+                    loadAdminData(); 
                 } else { 
-                    otpInputs.forEach(i => { i.value = ''; i.classList.add('otp-locked'); });
-                    otpInputs[0].focus();
+                    inputs.forEach(i => { i.value = ''; i.classList.add('otp-locked'); });
+                    inputs[0].focus();
                     subTitle.innerText = result.message || "Hatalı Şifre!";
                     subTitle.classList.replace('text-gray-400', 'text-red-400');
                 }
-            } catch (err) { alert("Sunucuya bağlanılamadı."); }
-            btn.innerHTML = 'Giriş Yap'; btn.disabled = false;
+            } catch (err) { subTitle.innerText = "Sunucuya bağlanılamadı."; subTitle.classList.replace('text-gray-400', 'text-red-400'); }
+            btn.innerHTML = isGuest ? 'Dosyalarımı Bul' : 'Giriş Yap'; btn.disabled = false;
         }
 
-        function logoutAdmin() { secureSessionToken = ''; switchView('uploadView'); }
+        function logoutAdmin() { secureSessionToken = ''; isGuestMode = false; switchView('uploadView'); }
 
         // SÜRÜKLE BIRAK
         const dropZones = [document.getElementById('defaultDropZone'), document.getElementById('activeDropZone')];
@@ -370,7 +375,7 @@
             `).join('');
         }
 
-        // YÜKLEME
+        // YÜKLEME MANTIĞI
         function startUpload() {
             if(selectedFilesData.length === 0) return;
             document.getElementById('spinner').classList.remove('hidden');
@@ -424,10 +429,11 @@
             selectedFilesData = []; updateFileListUI();
         }
 
-        // ADMİN PANELİ (Kartlar, Paylaşım Linki)
+        // PANELLER VE DATA MANTIĞI
         async function loadAdminData() {
             const container = document.getElementById('adminCardsContainer');
-           container.innerHTML = '<div class="col-span-full py-20 flex flex-col items-center justify-center text-blue-400"><div class="w-20 h-20 mb-4 drop-shadow-[0_0_15px_rgba(59,130,246,0.6)]"><img src="search-loading.svg" alt="Senkronize" class="w-full h-full object-contain"></div><p class="text-sm font-bold tracking-wider drop-shadow-md">Sistem Taranıyor ve Senkronize Ediliyor...</p></div>';
+            const msg = isGuestMode ? "Dosyalarınız Bulunuyor..." : "Sistem Taranıyor...";
+            container.innerHTML = `<div class="col-span-full py-20 flex flex-col items-center justify-center text-blue-400"><div class="w-20 h-20 mb-4 drop-shadow-[0_0_15px_rgba(59,130,246,0.6)]"><img src="search-loading.svg" class="w-full h-full object-contain"></div><p class="text-sm font-bold tracking-wider drop-shadow-md">${msg}</p></div>`;
             try {
                 const response = await fetch('https://tonoz-backend.onrender.com/api/files', { headers: { 'Authorization': 'Bearer ' + secureSessionToken } });
                 const result = await response.json();
@@ -448,12 +454,23 @@
             const res = await fetch(url, options); return await res.json();
         }
 
+        // YENİ: Şifre Atama Fonksiyonları
+        async function setSharePin(id, pin) {
+            const res = await apiCall(`https://tonoz-backend.onrender.com/api/set-pin/${id}`, 'POST', { pin: pin });
+            if(res.success) loadAdminData(); else alert("İşlem başarısız.");
+        }
+        function promptSharePin(id) {
+            const pin = prompt("Bu klasörü Müşteriye açmak için 6 haneli bir ŞİFRE belirleyin:");
+            if(pin === null) return;
+            if(pin.length !== 6 || isNaN(pin)) return alert("Şifre sadece 6 haneli RAKAM olmalıdır!");
+            setSharePin(id, pin);
+        }
+
         async function deleteFile(fileId) {
             if(!confirm("Bu dosyayı kalıcı olarak silmek istediğine emin misin?")) return;
             const res = await apiCall(`https://tonoz-backend.onrender.com/api/delete/${fileId}`, 'DELETE');
             if(res.success) loadAdminData(); else alert("Silinemedi.");
         }
-
         async function deleteFolder(folderId) {
             if(!confirm("TÜM KLASÖRÜ kalıcı olarak silmek istediğine emin misin?")) return;
             const res = await apiCall(`https://tonoz-backend.onrender.com/api/delete/${folderId}`, 'DELETE');
@@ -479,15 +496,13 @@
         }
 
         function setView(mode) { 
-            const btnGrid = document.getElementById('btnGrid');
-            const btnList = document.getElementById('btnList');
             currentMode = mode;
             if(mode === 'list') {
-                btnList.classList.add('glass-btn-active', 'text-blue-400'); btnList.classList.remove('text-gray-400', 'hover:text-white');
-                btnGrid.classList.remove('glass-btn-active', 'text-blue-400'); btnGrid.classList.add('text-gray-400', 'hover:text-white');
+                btnList.className = 'w-8 h-8 md:w-9 md:h-9 rounded-lg flex items-center justify-center transition glass-btn-active text-blue-400';
+                btnGrid.className = 'w-8 h-8 md:w-9 md:h-9 rounded-lg flex items-center justify-center transition text-gray-400 hover:text-white';
             } else {
-                btnGrid.classList.add('glass-btn-active', 'text-blue-400'); btnGrid.classList.remove('text-gray-400', 'hover:text-white');
-                btnList.classList.remove('glass-btn-active', 'text-blue-400'); btnList.classList.add('text-gray-400', 'hover:text-white');
+                btnGrid.className = 'w-8 h-8 md:w-9 md:h-9 rounded-lg flex items-center justify-center transition glass-btn-active text-blue-400';
+                btnList.className = 'w-8 h-8 md:w-9 md:h-9 rounded-lg flex items-center justify-center transition text-gray-400 hover:text-white';
             }
             filterCards(); 
         }
@@ -507,11 +522,14 @@
                 let filesHTML = '';
                 let totalMB = data.files.reduce((acc, f) => acc + (isNaN(parseFloat(f.size)) ? 0 : parseFloat(f.size)), 0).toFixed(1) + " MB";
                 
-                if(currentMode === 'list') {
+                if(currentMode === 'list' || isGuestMode) { // Misafirde hep liste modunu zorunlu kılabiliriz (daha temiz)
                     filesHTML = `<div class="space-y-1.5 mt-3">` + data.files.map(f => {
                         const icon = getIconData(f.mimeType);
                         const filePreviewUrl = `https://tonoz-backend.onrender.com/api/file/${f.id}?action=preview&token=${secureSessionToken}`;
                         const fileDownloadUrl = `https://tonoz-backend.onrender.com/api/file/${f.id}?action=download&token=${secureSessionToken}`;
+                        // Müşteriden Çöp kutusunu gizle
+                        const deleteFileBtn = isGuestMode ? '' : `<button onclick="deleteFile('${f.id}')" class="w-6 h-6 flex items-center justify-center rounded bg-red-500/20 text-red-400 hover:bg-red-500 hover:text-white transition"><i class="fas fa-trash text-[10px]"></i></button>`;
+                        
                         return `
                         <div class="flex justify-between items-center p-2 glass-panel rounded-lg hover:bg-white/10 transition group bg-black/30">
                             <div class="flex items-center gap-2 text-xs text-gray-200 overflow-hidden pr-1">
@@ -521,11 +539,12 @@
                                 <span class="text-[10px] text-gray-400 mr-1 font-medium">${f.size}</span>
                                 <a href="${filePreviewUrl}" target="_blank" class="w-6 h-6 flex items-center justify-center rounded bg-blue-500/20 text-blue-400 hover:bg-blue-500 hover:text-white transition"><i class="fas fa-eye text-[10px]"></i></a>
                                 <a href="${fileDownloadUrl}" target="_blank" class="w-6 h-6 flex items-center justify-center rounded bg-green-500/20 text-green-400 hover:bg-green-500 hover:text-white transition"><i class="fas fa-download text-[10px]"></i></a>
-                                <button onclick="deleteFile('${f.id}')" class="w-6 h-6 flex items-center justify-center rounded bg-red-500/20 text-red-400 hover:bg-red-500 hover:text-white transition"><i class="fas fa-trash text-[10px]"></i></button>
+                                ${deleteFileBtn}
                             </div>
                         </div>`;
                     }).join('') + `</div>`;
                 } else {
+                    // Sadece admin görebileceği Grid Modu
                     filesHTML = `<div class="grid grid-cols-2 gap-2 mt-3">` + data.files.map(f => {
                         const icon = getIconData(f.mimeType);
                         const filePreviewUrl = `https://tonoz-backend.onrender.com/api/file/${f.id}?action=preview&token=${secureSessionToken}`;
@@ -549,18 +568,45 @@
 
                 const zipDownloadUrl = `https://tonoz-backend.onrender.com/api/download-folder/${data.id}?token=${secureSessionToken}`;
 
-                return `
-                <div class="glass-3d p-5 flex flex-col transition-all relative group h-fit">
-                    <!-- PAYLAŞIM VE DÜZENLEME BUTONLARI EKLENDİ -->
+                // Yönetici / Misafir Arayüz Kararları
+                let adminTopButtons = '';
+                let shareBadge = '';
+                let cardStyling = 'glass-3d p-5 flex flex-col transition-all relative group h-fit';
+
+                if (!isGuestMode) {
+                    // Kart Paylaşıma açıksa yeşil parlat ve etiketi göster
+                    if (data.sharePin) {
+                        cardStyling += ' glass-shared';
+                        shareBadge = `<span class="ml-auto bg-emerald-500/20 text-emerald-400 px-2 py-1 rounded text-[10px] font-bold border border-emerald-500/30 flex items-center gap-1 shadow-[0_0_10px_rgba(16,185,129,0.3)]"><i class="fas fa-unlock-alt"></i> Şifre: ${data.sharePin}</span>`;
+                    }
+
+                    const shareActionBtn = data.sharePin 
+                        ? `<button onclick="setSharePin('${data.id}', '')" class="w-8 h-8 rounded bg-orange-500/20 text-orange-400 hover:bg-orange-500 hover:text-white flex items-center justify-center transition border border-orange-500/30" title="Müşteri Erişimini Kapat (Şifreyi Kaldır)"><i class="fas fa-lock"></i></button>`
+                        : `<button onclick="promptSharePin('${data.id}')" class="w-8 h-8 rounded bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500 hover:text-white flex items-center justify-center transition border border-emerald-500/30" title="Şifreyle Müşteriye Aç"><i class="fas fa-key"></i></button>`;
+
+                    adminTopButtons = `
                     <div class="absolute top-5 right-5 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity z-20">
-                        <button onclick="copyShareLink('${data.id}', this)" class="w-8 h-8 rounded bg-green-500/20 text-green-400 hover:bg-green-500 hover:text-white flex items-center justify-center transition border border-green-500/30" title="İndirme Linkini Kopyala (Şifresiz Paylaşım)"><i class="fas fa-link text-xs"></i></button>
+                        ${shareActionBtn}
+                        <button onclick="copyShareLink('${data.id}', this)" class="w-8 h-8 rounded bg-blue-500/20 text-blue-400 hover:bg-blue-500 hover:text-white flex items-center justify-center transition border border-blue-500/30" title="Şifresiz İndirme Linkini Kopyala"><i class="fas fa-link text-xs"></i></button>
                         <button onclick="deleteFolder('${data.id}')" class="w-8 h-8 rounded bg-red-500/20 text-red-400 hover:bg-red-500 hover:text-white flex items-center justify-center transition border border-red-500/30" title="Tümünü Sil"><i class="fas fa-trash text-xs"></i></button>
-                    </div>
-                    <div class="border-b border-white/10 pb-4 mb-4 flex gap-4">
-                        <div class="w-12 h-12 rounded-xl bg-blue-500/20 text-blue-400 flex items-center justify-center text-lg font-bold shadow-[0_0_15px_rgba(59,130,246,0.2)] flex-shrink-0 border border-blue-400/30">${data.sender.charAt(0).toUpperCase()}</div>
-                        <div class="overflow-hidden flex-grow pr-20">
-                            <h3 class="font-bold text-white text-base truncate" title="${data.sender}">${data.sender}</h3>
-                            <p class="text-[10px] text-cyan-300 mt-1"><i class="far fa-clock"></i> ${data.time}</p>
+                    </div>`;
+                }
+
+                // Müşteri Gönderen / Klasör Adı (Daha sade)
+                const avatarColor = isGuestMode ? 'from-emerald-500 to-teal-500 shadow-[0_0_15px_rgba(16,185,129,0.4)] border-emerald-400/30' : 'bg-blue-500/20 text-blue-400 shadow-[0_0_15px_rgba(59,130,246,0.2)] border-blue-400/30';
+                const avatarIcon = isGuestMode ? `<i class="fas fa-box-open text-white"></i>` : data.sender.charAt(0).toUpperCase();
+
+                return `
+                <div class="${cardStyling}">
+                    ${adminTopButtons}
+                    <div class="border-b border-white/10 pb-4 mb-4 flex gap-4 items-center">
+                        <div class="w-12 h-12 rounded-xl flex items-center justify-center text-lg font-bold flex-shrink-0 border ${isGuestMode ? 'bg-gradient-to-tr '+avatarColor : avatarColor}">${avatarIcon}</div>
+                        <div class="overflow-hidden flex-grow flex items-center pr-20">
+                            <div>
+                                <h3 class="font-bold text-white text-base truncate" title="${data.sender}">${data.sender}</h3>
+                                <p class="text-[10px] text-cyan-300 mt-1"><i class="far fa-clock"></i> ${data.time}</p>
+                            </div>
+                            ${shareBadge}
                         </div>
                     </div>
                     <div class="flex-grow flex flex-col">
@@ -570,7 +616,7 @@
                                 <span class="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1.5">İçerik (${data.files.length})</span>
                                 <span class="text-xs font-bold text-white bg-black/50 px-2.5 py-1 rounded self-start border border-white/5">${totalMB}</span>
                             </div>
-                            <a href="${zipDownloadUrl}" class="text-xs font-bold text-white bg-blue-600/40 hover:bg-blue-500 px-3 py-2 rounded-lg transition flex items-center gap-2 border border-blue-500/50 shadow-lg">
+                            <a href="${zipDownloadUrl}" class="text-xs font-bold text-white ${isGuestMode ? 'bg-emerald-600/60 hover:bg-emerald-500 border-emerald-500/50' : 'bg-blue-600/40 hover:bg-blue-500 border-blue-500/50'} px-3 py-2 rounded-lg transition flex items-center gap-2 shadow-lg">
                                 <i class="fas fa-file-archive"></i> Tümünü İndir (ZIP)
                             </a>
                         </div>
@@ -581,18 +627,10 @@
         }
         
         setView('list');
-// MOBİL ZOOM (YAKINLAŞTIRMA) ENGELLEYİCİ KALKAN
-        // Çift Tıklama (Double-tap) Zoom Engelleme
-        document.addEventListener('dblclick', function(event) {
-            event.preventDefault();
-        }, { passive: false });
 
-        // İki Parmakla (Pinch) Yakınlaştırma Engelleme (Özellikle iPhone/iOS için)
-        document.addEventListener('gesturestart', function(event) {
-            event.preventDefault();
-        });
-
-        
+        // MOBİL ZOOM (YAKINLAŞTIRMA) ENGELLEYİCİ KALKAN
+        document.addEventListener('dblclick', function(event) { event.preventDefault(); }, { passive: false });
+        document.addEventListener('gesturestart', function(event) { event.preventDefault(); });
     </script>
 </body>
 </html>
